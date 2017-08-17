@@ -1,12 +1,12 @@
 # Remember to configure this to the actual path og the fltk config tool.
-FLTKCONFIG=/usr/local/bin/fltk-config
+# FreeBSD
+#FLTKCONFIG=/usr/local/bin/fltk-config
+# Gentoo
+FLTKCONFIG=/usr/bin/fltk-config
 
 CXX=`$(FLTKCONFIG) --cxx`
 CXXFLAGS=`$(FLTKCONFIG) --cxxflags` -Wall -I.
-LINKFLTK=`$(FLTKCONFIG) --ldstaticflags`
-LINKFLTK_GL=`$(FLTKCONFIG) --use-gl --ldstaticflags`
-LINKFLTK_IMG=`$(FLTKCONFIG) --use-images --ldstaticflags`
-LINKFLTK_ALL=`$(FLTKCONFIG) --use-images --use-gl --ldstaticflags`
+LINKFLTK=`$(FLTKCONFIG) --ldflags`
 
 .cpp.o:
 	${CXX} -I.. ${CXXFLAGS} -c $< -o $@
@@ -19,9 +19,9 @@ PROGRAM=clock
 OBJ=main.o
 
 all: $(PROGRAM)
-	
+
 $(PROGRAM): $(OBJ)
-	${CXX} $(OBJ) ${LINKFLTK_ALL} -o $(PROGRAM)
+	${CXX} $(OBJ) ${LINKFLTK} -o $(PROGRAM)
 
 clean:
 	$(RM) $(ALL)
