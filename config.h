@@ -7,9 +7,11 @@ class Config
     std::string file_name;
     std::map< std::string, std::string > options;
 
-    void error(std::string line, unsigned int line_number);
+    unsigned int error(std::string msg, std::string line,
+                       unsigned int line_number);
 
   public:
-    Config(std::string file_name);
-    unsigned char parse();
+    Config();
+    unsigned char load(std::string file_name);
+    unsigned char parse(std::string line, unsigned int line_no);
 };

@@ -180,11 +180,10 @@ char *get_weather(string city_id, string api_key)
     curl = curl_easy_init();
     if (curl)
     {
-      string url = "http://api.openweathermap.org/data/2.5/weather?id=";
-      url += city_id + "?id=2615876&APPID=" + api_key;
+        string url = "http://api.openweathermap.org/data/2.5/weather?id=";
+        url += city_id + "?id=2615876&APPID=" + api_key;
 
-        curl_easy_setopt(curl, CURLOPT_URL,
-                         url.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, weather_cb);
         res = curl_easy_perform(curl);
@@ -201,7 +200,7 @@ char *get_weather(string city_id, string api_key)
 
 void update_weather(void *ui_element)
 {
-    get_weather("2615876", "");
+    get_weather("", "");
     Fl::repeat_timeout(1800.0, update_weather, ui_element);
 }
 
@@ -217,7 +216,7 @@ int main(int argc, char **argv)
 
     if (config.parse() != 0)
     {
-      exit(1);
+        exit(1);
     }
 
     while ((c = getopt(argc, argv, "f")) != -1)
