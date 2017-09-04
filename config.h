@@ -19,5 +19,6 @@ class Config
     unsigned char parse_line(std::string line, const unsigned int line_no);
     std::string get_value(const std::string &key);
     size_t size();
+    std::map< std::string, std::string > values();
     void clear();
 };

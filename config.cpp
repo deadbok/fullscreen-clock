@@ -1,6 +1,9 @@
 #include "config.h"
+#include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <sstream>
 
 Config::Config() {}
@@ -12,6 +15,12 @@ unsigned char Config::load(const std::string &file_name)
     std::ifstream config_file;
 
     config_file.open(this->file_name.c_str());
+    if (config_file.fail())
+    {
+        std::cerr << std::endl
+                  << "Error opening configuration file" << std::endl;
+        return 2;
+    }
 
     this->options.clear();
 
@@ -35,6 +44,9 @@ unsigned char Config::load(const std::string &file_name)
             }
         }
     }
+
+    config_file.close();
+
     return 0;
 }
 
@@ -134,6 +146,8 @@ unsigned char Config::parse_line(std::string line, const unsigned int line_no)
         // Save the key.
         key = line.substr(0, key_end);
 
+        std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+
         // Remove the key from the input string.
         std::string value_str =
             this->trim(line.substr(equal_pos + 1, line.length()));
@@ -194,10 +208,19 @@ unsigned char Config::parse_line(std::string line, const unsigned int line_no)
 
 std::string Config::get_value(const std::string &key)
 {
-    return this->options.find(key)->second;
+    std::map< std::string, std::string >::iterator key_it =
+        this->options.find(key);
+
+    if (key_it == this->options.end())
+    {
+        return ("");
+    }
+    return key_it->second;
 }
 
 size_t Config::size() { return this->options.size(); }
+
+std::map< std::string, std::string > Config::values() { return this->options; }
 
 unsigned int Config::error(std::string msg, std::string line,
                            unsigned int line_number)
