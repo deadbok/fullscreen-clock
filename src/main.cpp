@@ -1,6 +1,6 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Box.H>
-#include <FL/Fl_Window.H>
+#include <FL/Fl_Double_Window.H>
 #include <Fl/Fl_Button.h>
 #include <Fl/Fl_PNG_Image.H>
 #include <curl/curl.h>
@@ -51,7 +51,7 @@ void update_time(void *ui_element)
 
     box->label(time_str);
 
-    Fl::repeat_timeout(10.0, update_time, ui_element);
+    Fl::repeat_timeout(5.0, update_time, ui_element);
 }
 
 void update_weather(void *weather_cb_data)
@@ -72,7 +72,7 @@ void update_weather(void *weather_cb_data)
 
     box->image(scaled_icon);
 
-    Fl::repeat_timeout(1800.0, update_weather);
+    Fl::repeat_timeout(900.0, update_weather);
 };
 
 int main(int argc, char **argv)
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
     }
 
     // Creat the FLTK window.
-    Fl_Window *win = new Fl_Window(Fl::w(), Fl::h(), "Clock");
+    Fl_Double_Window *win = new Fl_Double_Window(Fl::w(), Fl::h(), "Clock");
     win->color(fl_rgb_color(50));
 
     std::cout << "Resolution: " << Fl::w() << "x" << Fl::h() << std::endl;

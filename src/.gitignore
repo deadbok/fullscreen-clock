@@ -1,0 +1,7 @@
+.idea/*
+clock
+*.o
+.clockrc
+*.cpp~
+*.gch
+cscope*.*

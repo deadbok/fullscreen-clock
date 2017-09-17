@@ -1,3 +1,4 @@
+#include <cmath>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -6,15 +7,20 @@
 
 #include "owm.h"
 
+/*
+ * TODO: Add temperature unit handling.
+ */
+
 std::string OWM::icons_ids[] = {"01d", "01n", "02d", "02n", "03d", "03n",
                                 "04d", "04n", "09d", "09n", "10d", "10n",
                                 "11d", "11n", "13d", "13n", "50d", "50n"};
 
-OWM::OWM(std::string &city_id, std::string &api_key)
+OWM::OWM(std::string &city_id, std::string &api_key, bool celsius)
 {
     this->city_id = city_id;
     this->api_key = api_key;
     this->get_icons();
+    this->celsius = celsius;
 }
 
 size_t OWM::icon_cb(char *in, uint size, uint nmemb, void *png_file)
@@ -95,7 +101,9 @@ void OWM::parse_icon(json_object *weather)
                         39);
                 const char *icon = json_object_get_string(val);
                 strncpy(icon_url + 32, icon, 3);
-                printf("Icon URL: %s\n", icon_url);
+                // this->icon_file_name.clear();
+                this->icon_file_name = icon;
+                this->icon_file_name += ".png";
             }
         }
     }
@@ -105,13 +113,19 @@ void OWM::parse_temperature(json_object *temp)
 {
     if (temp != NULL)
     {
-        json_object_object_foreach(temp, key, val)
+        json_object_object_foreach(temp, key,
+                                   val) if (strncmp(key, "temp\0", 5) == 0)
         {
-            printf("key: %s, ", key);
-            printf("value: %s\n", json_object_get_string(val));
-            if (strncmp(key, "temp", 4) == 0)
+            float kelvin;
+            kelvin = std::stof(std::string(json_object_get_string(val)), NULL);
+
+            if (this->celsius)
             {
-                printf("Temperature\n");
+                this->temperature = round(kelvin - 273.15);
+            }
+            else
+            {
+                this->temperature = round((9.0 / 5) * (kelvin - 273.15) + 32);
             }
         }
     }
@@ -141,7 +155,7 @@ size_t OWM::weather_cb(char *in, uint size, uint nmemb, void *instance)
     return ret;
 }
 
-void OWM::get_weather()
+void OWM::update_weather()
 {
     if (this->city_id.length() == 0)
     {
@@ -178,3 +192,9 @@ void OWM::get_weather()
         curl_easy_cleanup(curl);
     }
 }
+
+int OWM::get_temperature() { return this->temperature; }
+
+std::string OWM::get_weather_icon() { return this->icon_file_name; }
+
+void OWM::set_celsius(bool celsius) { this->celsius = celsius; }
