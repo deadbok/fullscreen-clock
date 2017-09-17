@@ -4,8 +4,8 @@
 # Gentoo
 FLTKCONFIG=/usr/bin/fltk-config
 
-CXXFLAGS_FLTK=`$(FLTKCONFIG) --cxxflags`
-LDFLAGS_FLTK=`$(FLTKCONFIG) --ldflags`
+CXXFLAGS_FLTK=`$(FLTKCONFIG) --use-images --cxxflags`
+LDFLAGS_FLTK=`$(FLTKCONFIG) --use-images --ldflags`
 
 CXXFLAGS_CURL=`curl-config --cflags`
 LDFLAGS_CURL=`curl-config --libs`
@@ -17,7 +17,7 @@ CXXFLAGS_DBG=
 ifdef DEBUG
 	CXXFLAGS_DBG=-g
 endif
-CXXFLAGS=$(CXXFLAGS_FLTK) $(CXXFLAGS_CURL) $(CXXFLAGS_JSON-C)-Wall -I. -I.. $(CXXFLAGS_DBG)
+CXXFLAGS=$(CXXFLAGS_FLTK) $(CXXFLAGS_CURL) $(CXXFLAGS_JSON-C)-Wall -I. -I.. $(CXXFLAGS_DBG) -std=c++11
 LDFLAGS=$(LDFLAGS_FLTK) $(LDFLAGS_CURL) $(LDFLAGS_JSON-C)
 
 RM:=rm -f
