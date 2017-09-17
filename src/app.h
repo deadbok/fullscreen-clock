@@ -1,3 +1,5 @@
+#include <exception>
+
 #include <FL/Fl.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Double_Window.H>
@@ -5,6 +7,15 @@
 
 #include "config.h"
 #include "owm.h"
+
+class ConfigException : public std::exception
+{
+  public:
+    virtual const char *what() const throw()
+    {
+        return "Error loading configuration file";
+    }
+};
 
 class App;
 

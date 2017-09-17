@@ -16,13 +16,13 @@
 App::App(std::string config_file_name)
 {
     std::cout << this->name << " version " << this->version << std::endl;
+    std::cout << "Configuration file: " << config_file_name << std::endl;
 
     // Load configuration.
     this->config = new Config();
     if (config->load(config_file_name) != 0)
     {
-        std::cerr << "Error loading configuration file" << std::endl;
-        return;
+        throw ConfigException();
     }
 
     // Init curl.
