@@ -1,27 +1,31 @@
 # Remember to configure this to the actual path og the fltk config tool.
 # FreeBSD
-#FLTKCONFIG=/usr/local/bin/fltk-config
-# Gentoo
-FLTKCONFIG=/usr/bin/fltk-config
+FLTKCONFIG=/usr/local/bin/fltk-config
+# Linux
+#FLTKCONFIG=/usr/bin/fltk-config
 
-CXXFLAGS_FLTK=`$(FLTKCONFIG) --use-images --cxxflags`
-LDFLAGS_FLTK=`$(FLTKCONFIG) --use-images --ldflags`
+CXXFLAGS_FLTK!=$(FLTKCONFIG) --use-images --cxxflags
+LDFLAGS_FLTK!=$(FLTKCONFIG) --use-images --ldflags
 
-CXXFLAGS_CURL=`curl-config --cflags`
-LDFLAGS_CURL=`curl-config --libs`
+CXXFLAGS_CURL!=curl-config --cflags
+LDFLAGS_CURL!=curl-config --libs
 
-CXXFLAGS_JSON-C=`pkg-config json-c --cflags`
-LDFLAGS_JSON-C=`pkg-config json-c --libs`
+CXXFLAGS_JSON-C!=pkg-config json-c --cflags
+LDFLAGS_JSON-C!=pkg-config json-c --libs
 
 CXXFLAGS_DBG=
-ifdef DEBUG
-	CXXFLAGS_DBG=-g
-endif
-CXXFLAGS=$(CXXFLAGS_FLTK) $(CXXFLAGS_CURL) $(CXXFLAGS_JSON-C)-Wall -I. -I.. $(CXXFLAGS_DBG) -std=c++11
+#ifdef DEBUG
+CXXFLAGS_DBG=-g
+#endif
+
+CXXFLAGS=$(CXXFLAGS_FLTK) $(CXXFLAGS_CURL) $(CXXFLAGS_JSON-C) -Wall -I. -I.. $(CXXFLAGS_DBG) -std=c++11
 LDFLAGS=$(LDFLAGS_FLTK) $(LDFLAGS_CURL) $(LDFLAGS_JSON-C)
 
 RM:=rm -f
-INDENT:=clang-format -i
+#Linux
+#INDENT:=clang-format -i
+# FreeBSD
+INDENT:=clang-format40 -i
 
 # Final executable name.
 PROGRAM=../clock

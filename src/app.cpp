@@ -1,4 +1,4 @@
-#include <Fl/Fl_PNG_Image.H>
+#include <FL/Fl_PNG_Image.H>
 #include <curl/curl.h>
 #include <sys/select.h>
 #include <sys/socket.h>
