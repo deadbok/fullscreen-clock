@@ -26,9 +26,9 @@ INDENT:=clang-format -i
 # Final executable name.
 PROGRAM=../clock
 
-INC=config.h owm.h
-SRC=main.cpp config.cpp owm.cpp
-OBJ=main.o config.o owm.o
+INC=app.h config.h owm.h
+SRC=app.cpp config.cpp main.cpp owm.cpp
+OBJ=app.o config.o main.o owm.o
 
 all: $(PROGRAM) Makefile
 
