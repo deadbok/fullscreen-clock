@@ -1,20 +1,20 @@
 RM:=rm -f
 
 all:
-	cd src; $(MAKE) all
+	$(MAKE) -C src -f Makefile.FreeBSD all
 
 test:
-	cd src/test; $(MAKE) all
+	$(MAKE) -C src/test -f Makefile.FreeBSD all
 
 format:
-	cd src; $(MAKE) format
-	cd src/test; $(MAKE) format
+	$(MAKE) -C src -f Makefile.FreeBSD format
+	$(MAKE) -C src/test -f Makefile.FreeBSD format
 
 clean:
-	cd src; $(MAKE) clean
-	cd src/test; $(MAKE) clean
+	$(MAKE) -C src -f Makefile.FreeBSD clean
+	$(MAKE) -C src/test -f Makefile.FreeBSD clean
 
 distclean:
-	cd src; $(MAKE) clean
-	cd src/test; $(MAKE) clean
+	$(MAKE) -C src -f Makefile.FreeBSD clean
+	$(MAKE) -C src/test -f Makefile.FreeBSD clean
 	$(RM) clock
