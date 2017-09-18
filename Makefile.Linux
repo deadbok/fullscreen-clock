@@ -1,0 +1,20 @@
+RM:=rm -f
+
+all:
+	$(MAKE) -C src -f Makefile.Linux all
+
+test:
+	$(MAKE) -C src/test -f Makefile.Linux
+
+format:
+	$(MAKE) -C src -f Makefile.Linux format
+	$(MAKE) -C src/test -f Makefile.Linux format
+
+clean:
+	$(MAKE) -C src -f Makefile.Linux clean
+	$(MAKE) -C src/test -f Makefile.Linux clean
+
+distclean:
+	$(MAKE) -C src -f Makefile.Linux clean
+	$(MAKE) -C src/test -f Makefile.Linux clean
+	$(RM) clock
