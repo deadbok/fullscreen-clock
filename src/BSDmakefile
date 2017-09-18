@@ -1,5 +1,5 @@
 FLTKCONFIG:=/usr/local/bin/fltk-config
-CXXFLAGS_FLTK!=${FLTKCONFIG} --use-images --cxxflags
+CXXFLAGS_FLTK!=${FLTKCONFIG} --cxxflags
 LDFLAGS_FLTK!=${FLTKCONFIG} --use-images --ldflags
 
 CXXFLAGS_CURL!=curl-config --cflags
