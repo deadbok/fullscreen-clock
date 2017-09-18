@@ -1,3 +1,4 @@
+#include <FL/fl_draw.H>
 #include <FL/Fl_PNG_Image.H>
 #include <curl/curl.h>
 #include <sys/select.h>
@@ -15,6 +16,8 @@
 
 App::App(std::string config_file_name)
 {
+    int font_size = 1;
+
     std::cout << this->name << " version " << this->version << std::endl;
     std::cout << "Configuration file: " << config_file_name << std::endl;
 
@@ -47,7 +50,19 @@ App::App(std::string config_file_name)
     this->window = new Fl_Double_Window(Fl::w(), Fl::h(), "Clock");
     this->window->color(fl_rgb_color(50));
 
-    std::cout << "Resolution: " << Fl::w() << "x" << Fl::h() << std::endl;
+    std::cout << "Resolution: " << this->window->w() << "x" << this->window->h() << std::endl;
+
+    int max_width = this->window->w() - this->window->w()/20;
+    int max_height = this->window->h() - this->window->h()/20;
+    int width = 0, height = 0;
+    while ((width < max_width) && (height < max_height))
+    {
+        fl_font(FL_HELVETICA, font_size);
+        fl_measure("00:00", width, height);
+        font_size++;
+    }
+    font_size--;
+    std::cout << "Font size: " << font_size << std::endl;
 
     // Set to fullscreen if told to.
     if (fullscreen != "")
@@ -60,15 +75,17 @@ App::App(std::string config_file_name)
         }
     }
 
-    this->time_box = new Fl_Box(0, 0, Fl::w(), Fl::h() / 2);
+    this->time_box = new Fl_Box(0, 0, this->window->w(), this->window->h() / 2);
     this->time_box->labelcolor(fl_rgb_color(255));
-    this->time_box->labelsize(int(Fl::h() / 1.75));
+    this->time_box->labelsize(font_size);
     this->time_box->label("00:00");
 
-    this->weather_box = new Fl_Box(0, Fl::h() / 2, Fl::w(), Fl::h() / 4);
+
+
+    this->weather_box = new Fl_Box(0, this->window->h() / 2, this->window->w(),  this->window->h() / 4);
     weather_box->labelcolor(fl_rgb_color(255));
-    weather_box->labelsize(int(Fl::h() / 8));
-    weather_box->align(FL_ALIGN_INSIDE);
+    weather_box->labelsize(int( font_size / 4));
+    weather_box->align(FL_ALIGN_IMAGE_NEXT_TO_TEXT);
     weather_box->label("20 \u00B0C");
 }
 
