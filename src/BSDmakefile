@@ -28,7 +28,7 @@ INC=app.h config.h owm.h
 SRC=app.cpp config.cpp main.cpp owm.cpp
 OBJ=app.o config.o main.o owm.o
 
-all: ${PROGRAM} Makefile.FreeBSD
+all: ${PROGRAM} BSDmakefile
 	echo "Compiling for FreeBSD done."
 
 ${PROGRAM}: ${OBJ}

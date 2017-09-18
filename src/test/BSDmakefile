@@ -5,7 +5,7 @@ SRC:=config.cpp test-main.cpp
 
 RM:=rm -f
 
-all: tests Makefile.FreeBSD
+all: tests BSDmakefile
 
 clean: test-config-clean
 	$(RM) *.o
