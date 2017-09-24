@@ -23,14 +23,14 @@ RM:=rm -f
 INDENT:=clang-format -i
 
 # Final executable name.
-PROGRAM=../clock
+PROGRAM=clock
 
 INC=app.h config.h owm.h
 SRC=app.cpp config.cpp main.cpp owm.cpp
 OBJ=app.o config.o main.o owm.o
 
 all: $(PROGRAM) Makefile.Linux
-	echo "Compiling for Linux done."
+	@echo "Compiling client for Linux done."
 
 $(PROGRAM): $(OBJ)
 	${CXX} $(OBJ) ${LDFLAGS} -o $(PROGRAM)
@@ -45,3 +45,6 @@ clean:
 	$(RM) $(ALL)
 	$(RM) *.o
 	$(RM) core
+
+distclean: clean
+	$(RM) $(PROGRAM)

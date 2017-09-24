@@ -1,20 +1,36 @@
 RM:=rm -f
 
-all:
-	$(MAKE) -C src -f Makefile.Linux all
+all: client server
 
-test:
-	$(MAKE) -C src/test -f Makefile.Linux
+test: client-test
 
-format:
-	$(MAKE) -C src -f Makefile.Linux format
-	$(MAKE) -C src/test -f Makefile.Linux format
+clean: client-clean server-clean
 
-clean:
-	$(MAKE) -C src -f Makefile.Linux clean
-	$(MAKE) -C src/test -f Makefile.Linux clean
+client:
+	$(MAKE) -C src/client -f Makefile.Linux all
 
-distclean:
-	$(MAKE) -C src -f Makefile.Linux clean
-	$(MAKE) -C src/test -f Makefile.Linux clean
-	$(RM) clock
+client-test:
+	$(MAKE) -C src/client/test -f Makefile.Linux all
+
+client-format:
+	$(MAKE) -C src/client -f Makefile.Linux format
+	$(MAKE) -C src/client/test -f Makefile.Linux format
+
+client-clean:
+	$(MAKE) -C src/client -f Makefile.Linux clean
+	$(MAKE) -C src/client/test -f Makefile.Linux clean
+
+client-distclean:
+	$(MAKE) -C src/client -f Makefile.Linux distclean
+	$(MAKE) -C src/client/test -f Makefile.Linux clean
+
+server:
+	$(MAKE) -C src/server -f Makefile all
+
+server-format:
+	$(MAKE) -C src/server -f Makefile format
+
+server-clean:
+	$(MAKE) -C src/server -f Makefile clean
+
+distclean: client-distclean server-clean

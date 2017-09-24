@@ -29,7 +29,7 @@ SRC=app.cpp config.cpp main.cpp owm.cpp
 OBJ=app.o config.o main.o owm.o
 
 all: ${PROGRAM} BSDmakefile
-	echo "Compiling for FreeBSD done."
+	@echo "Compiling client for FreeBSD done."
 
 ${PROGRAM}: ${OBJ}
 	${CXX} ${OBJ} ${LDFLAGS} -o ${PROGRAM}

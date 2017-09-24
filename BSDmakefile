@@ -1,20 +1,33 @@
 RM:=rm -f
 
-all:
-	$(MAKE) -C src -f BSDmakefile all
+all: client server
 
-test:
-	$(MAKE) -C src/test -f BSDmakefile all
+test: client-test
 
-format:
-	$(MAKE) -C src -f BSDmakefile format
-	$(MAKE) -C src/test -f BSDmakefile format
+clean: client-clean server-clean
 
-clean:
-	$(MAKE) -C src -f BSDmakefile clean
-	$(MAKE) -C src/test -f BSDmakefile clean
+client:
+	$(MAKE) -C src/client -f BSDmakefile all
 
-distclean:
-	$(MAKE) -C src -f BSDmakefile clean
-	$(MAKE) -C src/test -f BSDmakefile clean
+client-test:
+	$(MAKE) -C src/client/test -f BSDmakefile all
+
+client-format:
+	$(MAKE) -C src/client -f BSDmakefile format
+	$(MAKE) -C src/client/test -f BSDmakefile format
+
+client-clean:
+	$(MAKE) -C src/client -f BSDmakefile clean
+	$(MAKE) -C src/client/test -f BSDmakefile clean
+
+server:
+	$(MAKE) -C src/server -f BSDmakefile all
+
+server-format:
+	$(MAKE) -C src/server -f BSDmakefile format
+
+server-clean:
+	$(MAKE) -C src/server -f BSDmakefile clean
+
+distclean: client-clean server-clean
 	$(RM) clock

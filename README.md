@@ -1,14 +1,33 @@
 # fullscreen-clock
 
-Fullscreen clock
+Fullscreen clock using the FLTK toolkit.
+
+ * Clock (use NTP on the system).
+ * Open Weather Map integration.
 
 # Dependencies
+
+## Client
 
  * X11
  * FLTK
  * json-c
  * libcurl
 
+## Server
+ * Flask
+ * Flask-RESTful
+ * Falcon
+
+# Design
+
+## Front end (client)
+
+The front end is a C++ application using the FLTK ui toolkit and curl. The UI
+shows time, and two smaller lines for custom messages.
+
+The time field uses the system time. The messages fields retrieved from the
+server using a RESTful interface.
 
 # Lightweight FreeBSD installation
 
@@ -22,7 +41,7 @@ Optionally install nano if you do not know how to quit vi:
 
 Install build and runtime dependencies
 
-    $ pkg install xorg-minimal fltk json-c pkgconf urwfonts
+    $ pkg install xorg-minimal fltk json-c pkgconf urwfonts xset
 
 ## Building the clock
 
