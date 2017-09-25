@@ -1,9 +1,10 @@
 from flask import Flask
 from flask_restplus import Resource, Api
-from Queue import Queue
+from Queue import Queue, Empty
 
 app = Flask(__name__)
 api = Api(app)
+config = app.config.from_pyfile('config.py')
 
 L1_DATASOURCES = Queue(50)
 L1_DATASOURCES = Queue(50)
@@ -23,21 +24,19 @@ class Lines(Resource):
 
         try:
             if lineno == 0:
-                line[0] = ''
+                self.lines[0] = ''
                 while True:
                     ds = L1_DATASOURCES.get(False)
-                    line[0] += ds()
-                    do_work(ds)
+                    self.lines[0] += ds()
                     L1_DATASOURCES.task_done()
             if lineno == 1:
-                line[1] = ''
+                self.lines[1] = ''
                 while True:
                     ds = L2_DATASOURCES.get(False)
-                    line[1] += ds()
-                    do_work(ds)
+                    self.lines[1] += ds()
                     L2_DATASOURCES.task_done()
-        except:
-            print('Exception')
+        except Empty as e:
+            print('Exception: ' + str(e))
 
         return {'text': self.lines[lineno]}
 
