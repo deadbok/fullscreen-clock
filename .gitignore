@@ -6,3 +6,5 @@ clock
 *.cpp~
 *.gch
 cscope*.*
+.atom-dbg.cson
+

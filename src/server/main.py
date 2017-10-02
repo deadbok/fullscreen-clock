@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restplus import Resource, Api
 from Queue import Queue, Empty
+from plugins import Plugins
 
 app = Flask(__name__)
 api = Api(app)
@@ -19,6 +20,8 @@ class Lines(Resource):
 
     def get(self, lineno):
         lineno = int(lineno)
+        plugins = Plugins()
+        
         if lineno > 1:
             return {'status': 'fail', 'test': 'Line does not exist'}
 
