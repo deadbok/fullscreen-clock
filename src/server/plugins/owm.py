@@ -9,13 +9,13 @@ class OWM(PluginBase):
                 "11d", "11n", "13d", "13n", "50d", "50n"]
 
     def __init__(self, api_key='', city_id=''):
-        self.api_key = api_key
-        self.city_id = city_id
+        self.api_key = config['OWM_API_KEY']
+        self.city_id = config['OWM_CITY_ID']
         super(OWM, self).__init__('owm')
         self.get_icons()
 
     def get_icons(self):
-        print('Downloading wether icons')
+        print('Downloading weather icons')
         for icon_id in self.icons_ids:
             url = "http://openweathermap.org/img/w/" + icon_id + ".png"
 
