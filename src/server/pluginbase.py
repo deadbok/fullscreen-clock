@@ -1,9 +1,9 @@
 class UnImplementedUpdateException(Exception):
     def __init___(self):
-        super().__init__("Update must be implemented in child class.}")
+        super(UnImplementedUpdateException, self).__init__("Update must be implemented in child class.}")
 
 
-class PluginBase:
+class PluginBase(object):
     def __init__(self, name):
         self.name = name
         self.ret = [{'text': '', 'icon': ''}]

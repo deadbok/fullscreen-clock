@@ -1,12 +1,12 @@
 from flask import Flask
 from flask_restplus import Resource, Api
 from Queue import Queue, Empty
-import plugins
+from pluginloader import PluginLoader
 
 app = Flask(__name__)
 api = Api(app)
-config = app.config.from_pyfile('config.py')
-plugins = plugins.Plugins(config)
+app.config.from_pyfile('config.py')
+plugins = PluginLoader(app.config)
 
 L1_DATASOURCES = Queue(50)
 L1_DATASOURCES = Queue(50)
