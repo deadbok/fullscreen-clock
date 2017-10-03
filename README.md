@@ -16,8 +16,8 @@ Fullscreen clock using the FLTK toolkit.
 
 ## Server
  * Flask
- * Flask-RESTful
- * Falcon
+ * Flask-restplus
+ * Request
 
 # Design
 

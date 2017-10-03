@@ -1,3 +1,4 @@
+import json
 from flask import Flask
 from flask_restplus import Resource, Api
 from Queue import Queue, Empty
@@ -9,39 +10,38 @@ app.config.from_pyfile('config.py')
 plugins = PluginLoader(app.config)
 
 L1_DATASOURCES = Queue(50)
-L1_DATASOURCES = Queue(50)
+L2_DATASOURCES = Queue(50)
 
 
 @api.route('/line/<lineno>')
 class Lines(Resource):
-    lines = [
-        'Line1',
-        'Line2'
-    ]
+    lines = {
+        'status': 'success',
+        'data': []
+    }
 
     def get(self, lineno):
         lineno = int(lineno)
 
         if lineno > 1:
-            return {'status': 'fail', 'test': 'Line does not exist'}
+            return {'status': 'fail', 'text': 'Line does not exist'}
 
         try:
             if lineno == 0:
-                self.lines[0] = ''
                 while True:
                     ds = L1_DATASOURCES.get(False)
-                    self.lines[0] += ds()
+                    self.lines['data'].append(ds.run())
                     L1_DATASOURCES.task_done()
             if lineno == 1:
                 self.lines[1] = ''
                 while True:
                     ds = L2_DATASOURCES.get(False)
-                    self.lines[1] += ds()
+                    self.lines['data'].append(ds.run())
                     L2_DATASOURCES.task_done()
         except Empty as e:
-            print('Exception: ' + str(e))
+            pass
 
-        return {'text': self.lines[lineno]}
+        return json.dumps(self.lines)
 
 
 @api.route('/message/<message>')
@@ -55,5 +55,7 @@ def test_ds():
 
 
 if __name__ == '__main__':
-    L1_DATASOURCES.put(test_ds)
+    for plugin in plugins.plugins:
+        L1_DATASOURCES.put(plugin)
+
     app.run(debug=True)

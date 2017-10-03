@@ -6,7 +6,7 @@ class Test(PluginBase):
         super(Test, self).__init__('test')
 
     def update(self):
-        return self.ret
+        return [{'text': 'Test', 'icon': ''}]
 
 def test(config):
     return Test()

@@ -1,5 +1,7 @@
-from __future__ import print_function
 import urllib2
+import requests
+import json
+from flask import url_for
 from pluginbase import PluginBase
 
 
@@ -12,14 +14,17 @@ class OWM(PluginBase):
         self.api_key = config['OWM_API_KEY']
         self.city_id = config['OWM_CITY_ID']
         self.icon_dir = config['OWM_ICON_DIR']
+        self.celsius = config['OWM_CELSIUS']
         if self.icon_dir[-1] is not '/':
             self.icon_dir += '/'
+        self.interval = 1
 
         super(OWM, self).__init__('owm')
         self.get_icons()
 
     def get_icons(self):
         print('Downloading weather icons')
+        i = 1
         for icon_id in OWM.icon_ids:
             url = "http://openweathermap.org/img/w/" + icon_id + ".png"
 
@@ -32,14 +37,26 @@ class OWM(PluginBase):
                 if not buffer:
                     break
 
-                print('.', end=' ')
+                print(str(i) + '/' + str(len(OWM.icon_ids)))
                 image_file.write(buffer)
 
             image_file.close()
-            print('')
+            i += 1
 
     def update(self):
-        return self.ret
+        resp = requests.get('http://api.openweathermap.org/data/2.5/weather',
+                     params={'id': self.city_id, 'APPID': self.api_key})
+        weather_data = json.loads(resp.text)
+
+        if len(weather_data['weather']) > 0:
+            self.ret['icon'] = url_for('static', filename=self.icon_dir + weather_data['weather'][0]['icon'] + '.png')
+
+        kelvin = weather_data['main']['temp']
+        if self.celsius:
+            self.ret['text'] = str(kelvin - 273.15) + u'00B0C'
+        else:
+            self.ret['text'] = str((9.0 / 5) * (kelvin - 273.15) + 32) + u'00B0F'
+
 
 def owm(config):
     return OWM(config)
