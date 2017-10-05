@@ -1,0 +1,12 @@
+# Directory to load server plugins from.
+PLUGIN_DIR = "plugins"
+
+# Open Weather Map configuration.
+# API key.
+OWM_API_KEY = "1234"
+# ID of the city to get weather data for.
+OWM_CITY_ID = "1234"
+# Celsius/Fahrenheit.
+OWM_CELSIUS = True
+# Where to put the weather icons.
+OWM_ICON_DIR = "static/images/omw"

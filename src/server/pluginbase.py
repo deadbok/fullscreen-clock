@@ -6,11 +6,11 @@ class UnImplementedUpdateException(Exception):
 
 
 class PluginBase(object):
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
         self.ret = {'text': '', 'icon': ''}
         self.interval = 60
         self.last_run_time = 0
+        self.line = 0
 
     def update(self):
         raise UnImplementedUpdateException()

@@ -6,6 +6,7 @@ from pluginbase import PluginBase
 
 
 class OWM(PluginBase):
+    #Weather icon file names part.
     icon_ids = ["01d", "01n", "02d", "02n", "03d", "03n",
                 "04d", "04n", "09d", "09n", "10d", "10n",
                 "11d", "11n", "13d", "13n", "50d", "50n"]
@@ -17,13 +18,13 @@ class OWM(PluginBase):
         self.celsius = config['OWM_CELSIUS']
         if self.icon_dir[-1] is not '/':
             self.icon_dir += '/'
-        self.interval = 1
 
-        super(OWM, self).__init__('owm')
+        super(OWM, self).__init__()
+        self.interval = 600
         self.get_icons()
 
     def get_icons(self):
-        print('Downloading weather icons')
+        print('  Downloading weather icons')
         i = 1
         for icon_id in OWM.icon_ids:
             url = "http://openweathermap.org/img/w/" + icon_id + ".png"
@@ -37,7 +38,7 @@ class OWM(PluginBase):
                 if not buffer:
                     break
 
-                print(str(i) + '/' + str(len(OWM.icon_ids)))
+                print('   ' + str(i) + '/' + str(len(OWM.icon_ids)))
                 image_file.write(buffer)
 
             image_file.close()

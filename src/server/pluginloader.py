@@ -7,6 +7,8 @@ class PluginLoader(object):
         self.plugins = list()
         self.config = config
 
+        print('Loading plugins:')
+
         plugin_files = [pfile for pfile in os.listdir(config['PLUGIN_DIR']) if pfile.endswith('.py')]
 
         plugins = map(self.module_name, plugin_files)
@@ -14,9 +16,10 @@ class PluginLoader(object):
         importlib.import_module('plugins')
         for plugin in plugins:
             if not plugin.startswith('_'):
+                print(' ' + plugin)
                 module = importlib.import_module('plugins.' + plugin, package="plugins")
-
-                self.plugins.append(getattr(module, plugin)(config))
+                instance = getattr(module, plugin)(config)
+                self.plugins.append(instance)
 
     def module_name(self, filename):
         return os.path.splitext(filename)[0]
