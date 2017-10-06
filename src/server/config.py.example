@@ -1,6 +1,10 @@
 # Directory to load server plugins from.
 PLUGIN_DIR = "plugins"
 
+DEBUG = False
+
+HOST = '127.0.0.1'
+
 # Open Weather Map configuration.
 # API key.
 OWM_API_KEY = "1234"

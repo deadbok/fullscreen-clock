@@ -7,4 +7,4 @@ if __name__ == '__main__':
     for plugin in plugins.plugins:
         L1_DATASOURCES.put(plugin)
 
-    app.run(debug=True)
+    app.run(debug=app.config['DEBUG'], host=app.config['HOST'])
