@@ -1,4 +1,4 @@
-from pluginbase import PluginBase
+from app.pluginbase import PluginBase
 
 
 class Message(PluginBase):

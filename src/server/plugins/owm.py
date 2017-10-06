@@ -54,18 +54,18 @@ class OWM(PluginBase):
                             params={'id': self.city_id, 'APPID': self.api_key})
         weather_data = json.loads(resp.text)
 
-        if len(weather_data['weather']) > 0:
-            self.ret['icon'] = url_for('static', filename=self.icon_dir +
-                                                          weather_data[
-                                                              'weather'][0][
-                                                              'icon'] + '.png')
-
         kelvin = weather_data['main']['temp']
         if self.celsius:
             self.ret['text'] = str(kelvin - 273.15) + u'00B0C'
         else:
             self.ret['text'] = str(
                 (9.0 / 5) * (kelvin - 273.15) + 32) + u'00B0F'
+
+        if len(weather_data['weather']) > 0:
+            self.ret['icon'] = url_for('static', filename=self.icon_dir +
+                                                          weather_data[
+                                                              'weather'][0][
+                                                              'icon'] + '.png')
 
 
 def owm(config):

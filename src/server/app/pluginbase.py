@@ -1,8 +1,10 @@
 import time
 
+
 class UnImplementedUpdateException(Exception):
     def __init___(self):
-        super(UnImplementedUpdateException, self).__init__("Update must be implemented in child class.}")
+        super(UnImplementedUpdateException, self).__init__(
+            "Update must be implemented in child class.}")
 
 
 class PluginBase(object):
@@ -19,4 +21,4 @@ class PluginBase(object):
         if time.time() > (self.last_run_time + self.interval):
             self.last_run_time = time.time()
             self.update()
-        return(self.ret)
+        return (self.ret)
