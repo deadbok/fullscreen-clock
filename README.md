@@ -15,6 +15,7 @@ Fullscreen clock using the FLTK toolkit.
  * libcurl
 
 ## Server
+
  * Flask
  * Flask-restplus
  * Request
@@ -24,10 +25,27 @@ Fullscreen clock using the FLTK toolkit.
 ## Front end (client)
 
 The front end is a C++ application using the FLTK ui toolkit and curl. The UI
-shows time, and two smaller lines for custom messages.
+shows time on the top half of the window, and two lines of custom messages on
+the lower half.
 
+    |-----------------|
+    |                 |
+    |      22:00      |
+    |                 |
+    |-----------------|
+    | Message line 1  |
+    |-----------------|
+    | Message line 2  |
+    |-----------------|
+ 
 The time field uses the system time. The messages fields retrieved from the
 server using a RESTful interface.
+
+## Server
+
+The server is a Python application using the flask framework. The server is
+extendable through plugins, and can recieve message and icon URLs using a
+RESTful interface.
 
 # Lightweight FreeBSD installation
 
