@@ -6,7 +6,6 @@
 #include <FL/Fl_Widget.H>
 
 #include "config.h"
-#include "owm.h"
 
 class ConfigException : public std::exception
 {
@@ -34,14 +33,12 @@ class App
     char icon_file_name[64];
 
     Config *config;
-    bool celsius;
+    std::string server_url;
     bool fullscreen;
 
     Fl_Box *time_box;
     Fl_Box *weather_box;
     Fl_Double_Window *window;
-
-    OWM *weather;
 
     int last_minute;
     struct s_callback_data time_cb_data;
@@ -58,17 +55,17 @@ class App
     }
     void update_time(Fl_Widget *ui_element);
 
-    static void static_weather_callback(void *cb_data)
+    void json_parse(const char *json_str);
+    static size_t msg_cb(char *in, uint size, uint nmemb, void *instance);
+    void get_msg(unsigned char lineno);
+    static void static_msgs_callback(void *cb_data)
     {
         (reinterpret_cast< struct s_callback_data * >(cb_data)
-             ->instance->update_weather(
+             ->instance->update_msgs(
                  reinterpret_cast< struct s_callback_data * >(cb_data)
-                     ->ui_element,
-                 reinterpret_cast< OWM * >(
-                     reinterpret_cast< struct s_callback_data * >(cb_data)
-                         ->data)));
+                     ->ui_element));
     }
-    void update_weather(Fl_Widget *ui_element, OWM *weather);
+    void update_msgs(Fl_Widget *ui_element);
 
   public:
     std::string name = "Clock";

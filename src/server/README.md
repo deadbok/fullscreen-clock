@@ -1,3 +1,8 @@
+
+## API endpoints
+
+
+
 ## Install server on FreeBSD 11.1
 
 As root:

@@ -1,11 +1,7 @@
-# Open Weather Map API key
-owm_api_key = "12343"
-
-# Open Weather Map city ID
-owm_city_id = "6460975"
-
-# Display temperature in Celsius
-owm_celsius = yes
+msg_interval = 60
 
 # Start in full screen mode.
 fullscreen=yes
+
+# Server URL
+server = http://localhost:5000

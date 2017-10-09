@@ -24,9 +24,9 @@ INDENT:=clang-format40 -i
 # Final executable name.
 PROGRAM=../clock
 
-INC=app.h config.h owm.h
-SRC=app.cpp config.cpp main.cpp owm.cpp
-OBJ=app.o config.o main.o owm.o
+INC=app.h config.h
+SRC=app.cpp config.cpp main.cpp
+OBJ=app.o config.o main.o
 
 all: ${PROGRAM} BSDmakefile
 	@echo "Compiling client for FreeBSD done."

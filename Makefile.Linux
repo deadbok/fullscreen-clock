@@ -1,6 +1,6 @@
 RM:=rm -f
 
-all: client server
+all: client
 
 test: client-test
 
@@ -23,12 +23,6 @@ client-clean:
 client-distclean:
 	$(MAKE) -C src/client -f Makefile.Linux distclean
 	$(MAKE) -C src/client/test -f Makefile.Linux clean
-
-server:
-	$(MAKE) -C src/server -f Makefile all
-
-server-format:
-	$(MAKE) -C src/server -f Makefile format
 
 server-clean:
 	$(MAKE) -C src/server -f Makefile clean
