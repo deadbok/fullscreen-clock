@@ -25,17 +25,20 @@ INDENT:=clang-format -i
 # Final executable name.
 PROGRAM=clock
 
-INC=app.h config.h
+INC=app.h config.h json.hpp
 SRC=app.cpp config.cpp main.cpp
 OBJ=app.o config.o main.o
 
-all: $(PROGRAM) Makefile.Linux
+all: $(PROGRAM) Makefile.Linux json.hpp
 	@echo "Compiling client for Linux done."
 
-$(PROGRAM): $(OBJ)
+json.hpp:
+	wget https://raw.githubusercontent.com/nlohmann/json/master/src/json.hpp
+
+$(PROGRAM): $(OBJ) json.hpp
 	${CXX} $(OBJ) ${LDFLAGS} -o $(PROGRAM)
 
-.cpp.o:
+.cpp.o: json.hpp
 	${CXX} ${CXXFLAGS} -c $< -o $@
 
 format:

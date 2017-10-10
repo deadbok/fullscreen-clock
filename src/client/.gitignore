@@ -5,3 +5,5 @@ clock
 *.cpp~
 *.gch
 cscope*.*
+json.hpp
+

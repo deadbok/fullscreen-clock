@@ -16,6 +16,7 @@
 #include <vector>
 
 #include <json.h>
+#include "json.hpp"
 
 #include "app.h"
 
@@ -106,19 +107,12 @@ void App::update_time(Fl_Widget *ui_element)
 
 void App::json_parse(const char *json_str)
 {
-    struct json_object *root = json_tokener_parse(json_str);
+    nlohmann::json msg_json = nlohmann::json::parse(json_str);
     std::cout << json_str << std::endl;
-    std::cout << "jobj from str:" << std::endl << json_object_to_json_string_ext(root, JSON_C_TO_STRING_SPACED | JSON_C_TO_STRING_PRETTY) << std::endl;
-    json_object_object_foreach(root, key, val)
-    {
-        std::cout << val;
-        if (strncmp(key, "text", 7) == 0)
-        {
-        }
 
-        if (strncmp(key, "icon", 4) == 0)
-        {
-        }
+    for (nlohmann::json::iterator it = msg_json.begin(); it != msg_json.end(); ++it)
+    {
+        std::cout << it.value() << "\n";
     }
 }
 

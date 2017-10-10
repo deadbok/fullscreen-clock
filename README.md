@@ -12,6 +12,7 @@ Fullscreen clock using the FLTK toolkit.
  * X11
  * FLTK
  * json-c
+ * nlohmann-json (JSON for Modern C++: https://github.com/nlohmann/json)
  * libcurl
 
 ## Server
@@ -37,7 +38,7 @@ the lower half.
     |-----------------|
     | Message line 2  |
     |-----------------|
- 
+
 The time field uses the system time. The messages fields retrieved from the
 server using a RESTful interface.
 
