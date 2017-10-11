@@ -195,6 +195,8 @@ void App::update_msgs(Fl_Widget *ui_element)
     this->get_msg(0);
     this->get_msg(1);
 
+    ui_element->label(this->lines[1].c_str());
+
     Fl::repeat_timeout(5.0, this->static_msgs_callback,
                        static_cast< void * >(&this->weather_cb_data));
 }

@@ -56,10 +56,10 @@ class OWM(PluginBase):
 
         kelvin = weather_data['main']['temp']
         if self.celsius:
-            self.ret['text'] = str(kelvin - 273.15) + u'00B0C'
+            self.ret['text'] = unicode(str(kelvin - 273.15) + u'\xB0C')
         else:
-            self.ret['text'] = str(
-                (9.0 / 5) * (kelvin - 273.15) + 32) + u'00B0F'
+            self.ret['text'] = unicode(str(
+                (9.0 / 5) * (kelvin - 273.15) + 32) + u'\xB0F')
 
         if len(weather_data['weather']) > 0:
             self.ret['icon'] = url_for('static', filename=self.icon_dir +
