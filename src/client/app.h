@@ -7,6 +7,7 @@
 
 #include "config.h"
 
+// Configuration file error exception.
 class ConfigException : public std::exception
 {
   public:
@@ -16,24 +17,36 @@ class ConfigException : public std::exception
     }
 };
 
+// Forward decalration of the application class.
 class App;
 
-struct s_callback_data
+// Callback data for FLTK timeouts.
+struct s_fltk_callback_data
 {
     App *instance;
     Fl_Widget *ui_element;
     void *data;
 };
 
+// Callback data for curl responses to line requests.
+struct s_curl_callback_data
+{
+    App *instance;
+    unsigned char lineno;
+};
+
 class App
 {
   private:
     char time_str[7];
-    char weather_str[100];
-    char icon_file_name[64];
+    // Textual content of the lines in the UI.
+    std::string lines[3];
 
+    // Configuration data.
     Config *config;
+    // URL of the server.
     std::string server_url;
+    // Use fullscreen?
     bool fullscreen;
 
     Fl_Box *time_box;
@@ -41,28 +54,30 @@ class App
     Fl_Double_Window *window;
 
     int last_minute;
-    struct s_callback_data time_cb_data;
+    struct s_fltk_callback_data time_cb_data;
 
-    struct s_callback_data weather_cb_data;
+    struct s_fltk_callback_data weather_cb_data;
+
+    struct s_curl_callback_data msg_cb_data;
 
     // Callback for updating time.
     static void static_time_callback(void *cb_data)
     {
-        (reinterpret_cast< struct s_callback_data * >(cb_data)
+        (reinterpret_cast< struct s_fltk_callback_data * >(cb_data)
              ->instance->update_time(
-                 reinterpret_cast< struct s_callback_data * >(cb_data)
+                 reinterpret_cast< struct s_fltk_callback_data * >(cb_data)
                      ->ui_element));
     }
     void update_time(Fl_Widget *ui_element);
 
-    void json_parse(const char *json_str);
+    void json_parse(const char *json_str, unsigned char lineno);
     static size_t msg_cb(char *in, uint size, uint nmemb, void *instance);
     void get_msg(unsigned char lineno);
     static void static_msgs_callback(void *cb_data)
     {
-        (reinterpret_cast< struct s_callback_data * >(cb_data)
+        (reinterpret_cast< struct s_fltk_callback_data * >(cb_data)
              ->instance->update_msgs(
-                 reinterpret_cast< struct s_callback_data * >(cb_data)
+                 reinterpret_cast< struct s_fltk_callback_data * >(cb_data)
                      ->ui_element));
     }
     void update_msgs(Fl_Widget *ui_element);
