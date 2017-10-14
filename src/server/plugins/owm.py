@@ -1,8 +1,7 @@
 import json
-import urllib2
+import os
 
 import requests
-from flask import url_for
 
 from app.pluginbase import PluginBase
 
@@ -17,15 +16,20 @@ class OWM(PluginBase):
                 "11d", "11n", "13d", "13n", "50d", "50n"]
 
     def __init__(self, config):
+        super(OWM, self).__init__()
+
         self.api_key = config['OWM_API_KEY']
         self.city_id = config['OWM_CITY_ID']
         self.icon_dir = config['OWM_ICON_DIR']
         self.celsius = config['OWM_CELSIUS']
+        self.icon_size = config['ICON_SIZE']
+        self.interval = 1
+
         if self.icon_dir[-1] is not '/':
             self.icon_dir += '/'
+        if not os.path.isdir(self.icon_dir):
+            os.makedirs(self.icon_dir)
 
-        super(OWM, self).__init__()
-        self.interval = 600
         self.get_icons()
 
     def get_icons(self):
@@ -34,19 +38,9 @@ class OWM(PluginBase):
         for icon_id in OWM.icon_ids:
             url = "http://openweathermap.org/img/w/" + icon_id + ".png"
 
-            image_stream = urllib2.urlopen(url)
-            image_file = open(self.icon_dir + icon_id + ".png", 'wb')
+            self.fetch_icon(url)
 
-            block_sz = 8192
-            while True:
-                buffer = image_stream.read(block_sz)
-                if not buffer:
-                    break
-
-                print('   ' + str(i) + '/' + str(len(OWM.icon_ids)))
-                image_file.write(buffer)
-
-            image_file.close()
+            print('   ' + str(i) + '/' + str(len(OWM.icon_ids)))
             i += 1
 
     def update(self):
@@ -56,16 +50,14 @@ class OWM(PluginBase):
 
         kelvin = weather_data['main']['temp']
         if self.celsius:
-            self.ret['text'] = unicode(str(kelvin - 273.15) + u'\xB0C')
+            self.ret['text'] = unicode(str((int(kelvin - 273.15))) + u'\xB0C')
         else:
             self.ret['text'] = unicode(str(
-                (9.0 / 5) * (kelvin - 273.15) + 32) + u'\xB0F')
+                int((9.0 / 5) * (kelvin - 273.15)) + 32) + u'\xB0F')
 
         if len(weather_data['weather']) > 0:
-            self.ret['icon'] = url_for('static', filename=self.icon_dir +
-                                                          weather_data[
-                                                              'weather'][0][
-                                                              'icon'] + '.png')
+            self.ret['icon'] = self.icon_dir + \
+                               weather_data['weather'][0][ 'icon'] + '.png'
 
 
 def owm(config):

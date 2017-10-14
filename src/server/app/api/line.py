@@ -1,5 +1,6 @@
 from Queue import Empty
 
+from flask import current_app
 from flask_restplus import Resource, fields
 
 from app.api import api
@@ -25,16 +26,18 @@ class LineEP(Resource):
         ret = []
 
         try:
-            if lineno == 0:
-                while True:
+            while True:
+                if lineno == 0:
                     ds = L1_DATASOURCES.get(False)
-                    ret.append(ds.run())
+                if lineno == 1:
+                    ds = L2_DATASOURCES.get(False)
+                data = ds.run()
+                data['icon'] = current_app.static_folder + data['icon']
+                ret.append(data)
+                if lineno == 0:
                     plugins[0].append(ds)
                     L1_DATASOURCES.task_done()
-            if lineno == 1:
-                while True:
-                    ds = L2_DATASOURCES.get(False)
-                    ret.append(ds.run())
+                if lineno == 1:
                     plugins[1].append(ds)
                     L2_DATASOURCES.task_done()
         except Empty as e:
