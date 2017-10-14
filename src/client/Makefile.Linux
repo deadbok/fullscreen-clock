@@ -29,19 +29,19 @@ INC=app.h config.h json.hpp
 SRC=app.cpp config.cpp main.cpp
 OBJ=app.o config.o main.o
 
-all: $(PROGRAM) Makefile.Linux json.hpp
+all: $(PROGRAM) Makefile.Linux
 	@echo "Compiling client for Linux done."
 
 json.hpp:
 	wget https://raw.githubusercontent.com/nlohmann/json/master/src/json.hpp
 
-$(PROGRAM): $(OBJ) json.hpp
+$(PROGRAM): $(INC) $(SRC) $(OBJ)
 	${CXX} $(OBJ) ${LDFLAGS} -o $(PROGRAM)
 
-.cpp.o: json.hpp
+.cpp.o: $(INC)
 	${CXX} ${CXXFLAGS} -c $< -o $@
 
-format:
+format: $(SRC) $(INC)
 	$(INDENT) $(SRC) $(INC)
 
 clean:
@@ -51,3 +51,4 @@ clean:
 
 distclean: clean
 	$(RM) $(PROGRAM)
+	$(RM) json.hpp

@@ -1,4 +1,3 @@
-#include <FL/Fl_PNG_Image.H>
 #include <FL/fl_draw.H>
 
 #include <curl/curl.h>
@@ -10,6 +9,7 @@
 #include <time.h>
 
 #include <cstdlib>
+#include <iomanip>
 #include <iostream>
 #include <map>
 #include <string>
@@ -23,6 +23,7 @@ App::App(std::string config_file_name)
 {
     int font_size = 1;
 
+    // Header
     std::cout << this->name << " version " << this->version << std::endl;
     std::cout << "Configuration file: " << config_file_name << std::endl;
 
@@ -36,6 +37,7 @@ App::App(std::string config_file_name)
     // Init curl.
     curl_global_init(CURL_GLOBAL_ALL);
 
+    // Get values from configuration file
     this->server_url = this->config->get_value("server");
     std::string fullscreen = this->config->get_value("fullscreen");
     this->fullscreen = false;
@@ -47,6 +49,7 @@ App::App(std::string config_file_name)
     std::cout << "Resolution: " << this->window->w() << "x" << this->window->h()
               << std::endl;
 
+    // Calculate the maximum font size for the current resolution.
     int max_width = this->window->w() - this->window->w() / 20;
     int max_height = this->window->h() - this->window->h() / 20;
     int width = 0, height = 0;
@@ -70,61 +73,63 @@ App::App(std::string config_file_name)
         }
     }
 
+    // Create a box for the time display.
     this->time_box = new Fl_Box(0, 0, this->window->w(), this->window->h() / 2);
     this->time_box->labelcolor(fl_rgb_color(255));
     this->time_box->labelsize(font_size);
     this->time_box->label("");
 
-    this->weather_box = new Fl_Box(0, this->window->h() / 2, this->window->w(),
-                                   this->window->h() / 4);
-    weather_box->labelcolor(fl_rgb_color(255));
-    weather_box->labelsize(int(font_size / 4));
-    weather_box->align(FL_ALIGN_IMAGE_NEXT_TO_TEXT);
-    weather_box->label("");
+    this->msg_box[0] = new Fl_Box(0, this->window->h() / 2, this->window->w(),
+                                  this->window->h() / 4);
+    this->msg_box[0]->labelcolor(fl_rgb_color(255));
+    this->msg_box[0]->labelsize(int(font_size / 4));
+    this->msg_box[0]->align(FL_ALIGN_IMAGE_NEXT_TO_TEXT);
+    this->msg_box[0]->label("");
 }
 
-void App::update_time(Fl_Widget *ui_element)
+void App::update_time(Fl_Box *ui_element)
 {
     time_t current_time;
     tm time_buffer;
     tm *timeinfo;
 
+    // Get current time.
     time(&current_time);
     timeinfo = localtime_r(&current_time, &time_buffer);
 
     if (this->last_minute != timeinfo->tm_min)
     {
-        snprintf(time_str, 6, "%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min);
-        time_str[5] = '\0';
+        this->lines[0] = std::to_string(timeinfo->tm_hour);
+        this->lines[0] += ":";
+        this->lines[0] += std::to_string(timeinfo->tm_min);
 
-        ui_element->label(time_str);
+        ui_element->label(this->lines[0].c_str());
     }
 
     this->last_minute = timeinfo->tm_min;
 
     Fl::repeat_timeout(1.0, this->static_time_callback,
-                       static_cast< void * >(&this->time_cb_data));
+                       static_cast< void * >(&this->ui_time_cb_data));
 }
 
 void App::json_parse(const char *json_str, unsigned char lineno)
 {
     nlohmann::json msg_json = nlohmann::json::parse(json_str);
-    std::cout << "Line: ";
-    std::cout << int(lineno) << std::endl;
 
     for (nlohmann::json::iterator root_iter = msg_json.begin();
          root_iter != msg_json.end(); ++root_iter)
     {
         auto entry = root_iter.value();
-        std::cout << entry << "\n";
         for (nlohmann::json::iterator entry_iter = entry.begin();
              entry_iter != entry.end(); ++entry_iter)
         {
-            std::cout << entry_iter.key() << ": " << entry_iter.value() << "\n";
-
             if (entry_iter.key() == "text")
             {
                 this->lines[lineno + 1] = entry_iter.value();
+            }
+            else if (entry_iter.key() == "icon")
+            {
+                this->icons[lineno] = entry_iter.value();
             }
         }
     }
@@ -156,8 +161,8 @@ void App::get_msg(unsigned char lineno)
     CURL *curl;
     CURLcode res;
     curl = curl_easy_init();
-    this->msg_cb_data.instance = this;
-    this->msg_cb_data.lineno = lineno;
+    this->curl_msg_cb_data.instance = this;
+    this->curl_msg_cb_data.lineno = lineno;
     if (curl)
     {
         std::string url = this->server_url;
@@ -167,11 +172,11 @@ void App::get_msg(unsigned char lineno)
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, this->msg_cb);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &this->msg_cb_data);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &this->curl_msg_cb_data);
         res = curl_easy_perform(curl);
         if (res != CURLE_OK)
         {
-            fprintf(stderr, "curl openweathermap get request failed: %s\n",
+            fprintf(stderr, "Message request failed: %s\n",
                     curl_easy_strerror(res));
         }
 
@@ -179,43 +184,36 @@ void App::get_msg(unsigned char lineno)
     }
 }
 
-void App::update_msgs(Fl_Widget *ui_element)
+void App::update_msgs(Fl_Box *ui_element[])
 {
-    // weather->update_weather();
-    // sprintf(weather_str, "%2d \u00B0C", weather->get_temperature());
-    // ui_element->label(weather_str);
-    //
-    // sprintf(icon_file_name, "/var/tmp/%s",
-    // weather->get_weather_icon().c_str());
-    // Fl_PNG_Image *icon = new Fl_PNG_Image(icon_file_name);
-    //
-    // Fl_Image *scaled_icon = icon->copy(Fl::h() / 8, Fl::h() / 8);
-    //
-    // ui_element->image(scaled_icon);
     this->get_msg(0);
     this->get_msg(1);
 
-    ui_element->label(this->lines[1].c_str());
+    ui_element[0]->label(this->lines[1].c_str());
+
+    Fl_PNG_Image *icon = new Fl_PNG_Image(this->icons[0].c_str());
+
+    ui_element[0]->image(icon);
 
     Fl::repeat_timeout(5.0, this->static_msgs_callback,
-                       static_cast< void * >(&this->weather_cb_data));
+                       static_cast< void * >(&this->ui_msg_cb_data));
 }
 
 int App::run()
 {
     int ret;
 
-    this->time_cb_data.instance = this;
-    this->time_cb_data.ui_element = this->time_box;
-    this->time_cb_data.data = NULL;
+    this->ui_time_cb_data.instance = this;
+    this->ui_time_cb_data.ui_element = this->time_box;
+    this->ui_time_cb_data.data = NULL;
     Fl::add_timeout(0.01, this->static_time_callback,
-                    static_cast< void * >(&this->time_cb_data));
+                    static_cast< void * >(&this->ui_time_cb_data));
 
-    this->weather_cb_data.instance = this;
-    this->weather_cb_data.ui_element = this->weather_box;
-    this->weather_cb_data.data = NULL;
+    this->ui_msg_cb_data.instance = this;
+    this->ui_msg_cb_data.ui_element = this->msg_box;
+    this->ui_msg_cb_data.data = NULL;
     Fl::add_timeout(0.1, this->static_msgs_callback,
-                    static_cast< void * >(&this->weather_cb_data));
+                    static_cast< void * >(&this->ui_msg_cb_data));
 
     this->window->show();
 
