@@ -15,15 +15,15 @@ class OWM(PluginBase):
                 "04d", "04n", "09d", "09n", "10d", "10n",
                 "11d", "11n", "13d", "13n", "50d", "50n"]
 
-    def __init__(self, config):
+    def __init__(self, config, static_path):
         super(OWM, self).__init__()
 
         self.api_key = config['OWM_API_KEY']
         self.city_id = config['OWM_CITY_ID']
-        self.icon_dir = config['OWM_ICON_DIR']
+        self.icon_dir = static_path + "/" + config['OWM_ICON_DIR']
         self.celsius = config['OWM_CELSIUS']
         self.icon_size = config['ICON_SIZE']
-        self.interval = 1
+        self.interval = 600
 
         if self.icon_dir[-1] is not '/':
             self.icon_dir += '/'
@@ -57,8 +57,8 @@ class OWM(PluginBase):
 
         if len(weather_data['weather']) > 0:
             self.ret['icon'] = self.icon_dir + \
-                               weather_data['weather'][0][ 'icon'] + '.png'
+                               weather_data['weather'][0]['icon'] + '.png'
 
 
-def owm(config):
-    return OWM(config)
+def owm(config, static_path):
+    return OWM(config, static_path)

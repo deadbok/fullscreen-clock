@@ -3,6 +3,7 @@ import time
 import urllib2
 import cStringIO
 from PIL import Image
+from flask import current_app
 
 
 class UnImplementedUpdateException(Exception):
@@ -17,7 +18,7 @@ class PluginBase(object):
         self.interval = 60
         self.last_run_time = 0
         self.line = 0
-        self.icon_dir = 'app/static/images/'
+        self.icon_dir = 'images/'
         self.icon_size = (64, 64)
 
     def fetch_icon(self, url):

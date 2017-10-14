@@ -17,6 +17,7 @@ class LineEP(Resource):
     """
     Endpoint to get the lines to be displayed on the clock.
     """
+
     def get(self, lineno):
         """
         Get the messages queued for a line.
@@ -32,7 +33,6 @@ class LineEP(Resource):
                 if lineno == 1:
                     ds = L2_DATASOURCES.get(False)
                 data = ds.run()
-                data['icon'] = current_app.static_folder + data['icon']
                 ret.append(data)
                 if lineno == 0:
                     plugins[0].append(ds)

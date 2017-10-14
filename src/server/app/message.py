@@ -8,7 +8,8 @@ class Message(PluginBase):
     def __init__(self, message, icon):
         super(Message, self).__init__()
 
-        self.icon_dir = current_app.config['MSG_ICON_DIR']
+        self.icon_dir = current_app.static_folder + "/" + current_app.config[
+            'MSG_ICON_DIR']
         self.icon_size = current_app.config['ICON_SIZE']
 
         self.message = message

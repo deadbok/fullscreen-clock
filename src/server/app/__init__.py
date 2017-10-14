@@ -12,7 +12,7 @@ from app.views import bp as root_blueprint
 
 app = Flask(__name__)
 app.config.from_object('config')
-plugins = PluginLoader(app.config)
+plugins = PluginLoader(app.config, app.static_folder)
 
 
 def init_app(flask_app):
