@@ -25,9 +25,9 @@ INDENT:=clang-format -i
 # Final executable name.
 PROGRAM=clock
 
-INC=app.h config.h json.hpp
-SRC=app.cpp config.cpp main.cpp
-OBJ=app.o config.o main.o
+INC=app.h config.h json.hpp msgline.h timeline.h
+SRC=app.cpp config.cpp main.cpp msgline.cpp timeline.cpp
+OBJ=app.o config.o main.o msgline.o timeline.o
 
 all: $(PROGRAM) Makefile.Linux
 	@echo "Compiling client for Linux done."

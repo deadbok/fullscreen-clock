@@ -1,3 +1,6 @@
+#ifndef CONFIG_H_
+#define CONFIG_H_
+
 #include <map>
 #include <string>
 
@@ -22,3 +25,5 @@ class Config
     std::map< std::string, std::string > values();
     void clear();
 };
+
+#endif
