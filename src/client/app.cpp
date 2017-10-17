@@ -12,8 +12,6 @@
 
 App::App(std::string config_file_name)
 {
-    int font_size = 1;
-
     // Header
     std::cout << this->name << " version " << this->version << std::endl;
     std::cout << "Configuration file: " << config_file_name << std::endl;
@@ -40,22 +38,9 @@ App::App(std::string config_file_name)
     std::cout << "Resolution: " << this->window->w() << "x" << this->window->h()
               << std::endl;
 
-    // Calculate the maximum font size for the current resolution.
-    int max_width = this->window->w() - this->window->w() / 20;
-    int max_height = this->window->h() - this->window->h() / 20;
-    int width = 0, height = 0;
-    while ((width < max_width) && (height < max_height))
-    {
-        fl_font(FL_HELVETICA, font_size);
-        fl_measure("00:00", width, height);
-        font_size += 50;
-    }
-    while ((width > max_width) && (height > max_height))
-    {
-        fl_font(FL_HELVETICA, font_size);
-        fl_measure("00:00", width, height);
-        font_size--;
-    }
+    int font_size = this->get_max_font_size(
+        this->window->w() - this->window->w() / 16,
+        this->window->h() - this->window->h() / 16, "00:00");
     std::cout << "Font size: " << font_size << std::endl;
 
     // Set to fullscreen if told to.
@@ -82,18 +67,45 @@ App::App(std::string config_file_name)
                     this->window->h(), font_size, this->server_url);
 }
 
+int App::get_max_font_size(int w, int h, std::string text)
+{
+    // Calculate the maximum font size for the current resolution.
+    int width = 0, height = 0, font_size = 1;
+    while ((width < w) && (height < h))
+    {
+        fl_font(FL_HELVETICA, font_size);
+        fl_measure(text.c_str(), width, height);
+        font_size += 50;
+    }
+    while ((width > w) && (height > h))
+    {
+        fl_font(FL_HELVETICA, font_size);
+        fl_measure(text.c_str(), width, height);
+        font_size--;
+    }
+    font_size--;
+    return (font_size);
+}
+
 void App::update_time()
 {
     this->time_line->update();
 
-    Fl::repeat_timeout(1.0, this->static_time_callback, NULL);
+    Fl::repeat_timeout(1.0, this->static_time_callback, this);
 }
 
 void App::update_msgs(unsigned char lineno)
 {
-    this->top_msg_line->update(lineno);
-
-    Fl::repeat_timeout(60.0, this->static_top_msgs_callback, this);
+    if (lineno == 0)
+    {
+        this->top_msg_line->update(lineno);
+        Fl::repeat_timeout(60.0, this->static_top_msgs_callback, this);
+    }
+    else if (lineno == 1)
+    {
+        this->bottom_msg_line->update(lineno);
+        Fl::repeat_timeout(60.0, this->static_bottom_msgs_callback, this);
+    }
 }
 
 int App::run()
@@ -102,7 +114,9 @@ int App::run()
 
     Fl::add_timeout(0.1, this->static_time_callback, this);
 
-    Fl::add_timeout(0.1, this->static_top_msgs_callback, this);
+    Fl::add_timeout(1.1, this->static_top_msgs_callback, this);
+
+    Fl::add_timeout(2.1, this->static_bottom_msgs_callback, this);
 
     this->window->show();
 

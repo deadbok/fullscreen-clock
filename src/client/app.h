@@ -44,6 +44,8 @@ class App
 
     Fl_Double_Window *window;
 
+    int get_max_font_size(int w, int h, std::string text);
+
     // Callback for updating time.
     static void static_time_callback(void *cb_data)
     {
@@ -59,6 +61,11 @@ class App
     {
         App *instance = reinterpret_cast< App * >(cb_data);
         instance->update_msgs(0);
+    }
+    static void static_bottom_msgs_callback(void *cb_data)
+    {
+        App *instance = reinterpret_cast< App * >(cb_data);
+        instance->update_msgs(1);
     }
     void update_msgs(unsigned char lineno);
 

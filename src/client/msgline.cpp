@@ -22,30 +22,7 @@ size_t MsgLine::msg_cb(char *in, uint size, uint nmemb, void *data)
     MsgLine *instance =
         reinterpret_cast< struct s_curl_callback_data * >(data)->instance;
 
-    nlohmann::json msg_json = nlohmann::json::parse(in);
-
-    for (nlohmann::json::iterator root_iter = msg_json.begin();
-         root_iter != msg_json.end(); ++root_iter)
-    {
-
-        auto line = root_iter.value();
-
-        if (line["text"].type() != nlohmann::json::value_t::null)
-        {
-            instance->text = line["text"];
-            instance->label(instance->text.c_str());
-
-            if (line["icon"].type() != nlohmann::json::value_t::null)
-            {
-                instance->icon = line["icon"];
-
-                Fl_PNG_Image *fl_icon =
-                    new Fl_PNG_Image(instance->icon.c_str());
-
-                instance->image(fl_icon);
-            }
-        }
-    }
+    instance->json_str += in;
 
     return ret;
 }
@@ -68,6 +45,7 @@ void MsgLine::update(unsigned char lineno)
     curl = curl_easy_init();
     this->msg_cb_data.instance = this;
     this->msg_cb_data.lineno = lineno;
+    this->json_str = "";
     if (curl)
     {
         std::string url = this->server_url;
@@ -86,5 +64,28 @@ void MsgLine::update(unsigned char lineno)
         }
 
         curl_easy_cleanup(curl);
+    }
+    nlohmann::json msg_json = nlohmann::json::parse(this->json_str);
+
+    for (nlohmann::json::iterator root_iter = msg_json.begin();
+         root_iter != msg_json.end(); ++root_iter)
+    {
+
+        auto line = root_iter.value();
+
+        if (line["text"].type() != nlohmann::json::value_t::null)
+        {
+            this->text = line["text"];
+            this->label(this->text.c_str());
+
+            if (line["icon"].type() != nlohmann::json::value_t::null)
+            {
+                this->icon = line["icon"];
+
+                Fl_PNG_Image *fl_icon = new Fl_PNG_Image(this->icon.c_str());
+
+                this->image(fl_icon);
+            }
+        }
     }
 }

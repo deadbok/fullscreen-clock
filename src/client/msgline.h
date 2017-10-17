@@ -21,6 +21,8 @@ class MsgLine : public Fl_Box
     // URL of the server.
     std::string server_url;
 
+    std::string json_str;
+
     std::string text;
     std::string icon;
 

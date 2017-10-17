@@ -24,7 +24,14 @@ void TimeLine::update()
     {
         this->text = std::to_string(timeinfo->tm_hour);
         this->text += ":";
-        this->text += std::to_string(timeinfo->tm_min);
+        if (timeinfo->tm_min < 10)
+        {
+            this->text += "0" + std::to_string(timeinfo->tm_min);
+        }
+        else
+        {
+            this->text += std::to_string(timeinfo->tm_min);
+        }
 
         this->label(this->text.c_str());
     }
