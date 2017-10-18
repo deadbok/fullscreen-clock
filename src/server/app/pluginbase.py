@@ -14,34 +14,41 @@ class UnImplementedUpdateException(Exception):
 
 class PluginBase(object):
     def __init__(self):
-        self.ret = {'text': '', 'icon': ''}
-        self.interval = 60
+
+        self.display_sec = 60
+        self.interval_sec = 60
+        self.repeat = 0
         self.last_run_time = 0
         self.line = 0
         self.icon_dir = 'images/'
         self.icon_size = (64, 64)
+        self.ret = {'text': '', 'icon': '', 'seconds': self.display_sec}
 
     def fetch_icon(self, url):
-        image_stream = urllib2.urlopen(url)
+        ret = '';
+        if url is not '':
+            image_stream = urllib2.urlopen(url)
 
-        buffer = cStringIO.StringIO(urllib2.urlopen(url).read())
+            buffer = cStringIO.StringIO(urllib2.urlopen(url).read())
 
-        image = Image.open(buffer)
-        icon = image.resize(self.icon_size, Image.LANCZOS)
+            image = Image.open(buffer)
+            icon = image.resize(self.icon_size, Image.LANCZOS)
 
-        filename = self.icon_dir
-        filename += os.path.splitext(os.path.basename(url))[0]
-        filename += '.png'
+            ret = self.icon_dir
+            ret += os.path.splitext(os.path.basename(url))[0]
+            ret += '.png'
 
-        icon.save(filename, 'PNG')
+            icon.save(ret, 'PNG')
 
-        return (filename)
+        return (ret)
 
     def update(self):
         raise UnImplementedUpdateException()
 
     def run(self):
-        if time.time() > (self.last_run_time + self.interval):
+        if time.time() > (self.last_run_time + self.interval_sec):
             self.last_run_time = time.time()
             self.update()
+            if self.repeat > 0:
+                self.repeat -= 1
         return (self.ret)

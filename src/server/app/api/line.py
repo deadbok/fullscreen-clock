@@ -23,31 +23,23 @@ class LineEP(Resource):
         Get the messages queued for a line.
         """
         lineno = int(lineno)
-        plugins = [[], []]
-        ret = []
+        plugin = None
+        ret = {'text': '', 'icon': '', 'seconds': 0}
+        plugin_queue = None
 
-        try:
-            while True:
-                if lineno == 0:
-                    ds = L1_DATASOURCES.get(False)
-                if lineno == 1:
-                    ds = L2_DATASOURCES.get(False)
-                data = ds.run()
-                ret.append(data)
-                if lineno == 0:
-                    plugins[0].append(ds)
-                    L1_DATASOURCES.task_done()
-                if lineno == 1:
-                    plugins[1].append(ds)
-                    L2_DATASOURCES.task_done()
-        except Empty as e:
-            pass
+        if lineno == 0:
+            plugin_queue = L1_DATASOURCES
+        elif lineno == 1:
+            plugin_queue = L2_DATASOURCES
 
-        for task in plugins[0]:
-            if task.interval > 0:
-                L1_DATASOURCES.put(task)
-        for task in plugins[1]:
-            if task.interval > 0:
-                L2_DATASOURCES.put(task)
+        if plugin_queue is not None:
+            try:
+                plugin = plugin_queue.get(False)
+                ret = plugin.run()
+                plugin_queue.task_done()
+                if plugin.repeat != 0:
+                    plugin_queue.put(plugin)
+            except Empty as e:
+                pass
 
         return ret

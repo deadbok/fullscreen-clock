@@ -30,7 +30,7 @@ class MsgLine : public Fl_Box
 
   public:
     MsgLine(int x, int y, int w, int h, int font_size, std::string url);
-    void update(unsigned char lineno);
+    int update(unsigned char lineno);
 };
 
 #endif

@@ -10,7 +10,10 @@ ns = api.namespace('message',
 
 message = api.model('Message', {
     'text': fields.String(description='The text of the messae'),
-    'icon': fields.Url(description='Optional URL to an icon to include'),
+    'icon': fields.String(description='Optional URL to an icon to include'),
+    'repeat': fields.Integer(description='Number times to display the message'),
+    'interval_sec': fields.Integer(description='Minimum number of seconds between message repeats'),
+    'display_sec': fields.Integer(description='Minimum number of seconds the messaage is visible')
 })
 
 
@@ -19,7 +22,7 @@ message = api.model('Message', {
 @api.response(404, 'Message was not added.')
 class MessageEP(Resource):
     """
-    Equeue a message in the botton line of the clock display.
+    Enqueue a message in the botton line of the clock display.
     """
 
     @api.response(201, 'Message successfully added.')
@@ -28,6 +31,6 @@ class MessageEP(Resource):
         Add message to the bottom line of the clock display.
         """
         data = request.json
-        msg = Message(data['text'], data['icon'])
+        msg = Message(data['text'], data['icon'], data['interval_sec'], data['display_sec'], data['repeat'])
         L2_DATASOURCES.put(msg)
         return None, 201

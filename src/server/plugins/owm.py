@@ -23,7 +23,9 @@ class OWM(PluginBase):
         self.icon_dir = static_path + "/" + config['OWM_ICON_DIR']
         self.celsius = config['OWM_CELSIUS']
         self.icon_size = config['ICON_SIZE']
-        self.interval = 600
+        self.interval_sec = 600
+        self.display_sec = 600
+        self.repeat = -1
 
         if self.icon_dir[-1] is not '/':
             self.icon_dir += '/'
@@ -58,6 +60,9 @@ class OWM(PluginBase):
         if len(weather_data['weather']) > 0:
             self.ret['icon'] = self.icon_dir + \
                                weather_data['weather'][0]['icon'] + '.png'
+
+        self.ret['seconds'] = self.display_sec
+
 
 
 def owm(config, static_path):

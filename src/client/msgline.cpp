@@ -27,17 +27,17 @@ size_t MsgLine::msg_cb(char *in, uint size, uint nmemb, void *data)
     return ret;
 }
 
-void MsgLine::update(unsigned char lineno)
+int MsgLine::update(unsigned char lineno)
 {
     if (lineno < 0)
     {
         std::cerr << "Invalid message line: " << lineno << std::endl;
-        return;
+        return (0);
     }
     if (lineno > 1)
     {
         std::cerr << "Invalid message line: " << lineno << std::endl;
-        return;
+        return (0);
     }
 
     CURL *curl;
@@ -67,25 +67,31 @@ void MsgLine::update(unsigned char lineno)
     }
     nlohmann::json msg_json = nlohmann::json::parse(this->json_str);
 
-    for (nlohmann::json::iterator root_iter = msg_json.begin();
-         root_iter != msg_json.end(); ++root_iter)
+    std::cout << msg_json << std::endl;
+
+    if (msg_json["seconds"].type() != nlohmann::json::value_t::null)
     {
+        int seconds = msg_json["seconds"];
 
-        auto line = root_iter.value();
-
-        if (line["text"].type() != nlohmann::json::value_t::null)
+        if (seconds > 0)
         {
-            this->text = line["text"];
-            this->label(this->text.c_str());
-
-            if (line["icon"].type() != nlohmann::json::value_t::null)
+            if (msg_json["text"].type() != nlohmann::json::value_t::null)
             {
-                this->icon = line["icon"];
+                this->text = msg_json["text"];
+                this->label(this->text.c_str());
 
-                Fl_PNG_Image *fl_icon = new Fl_PNG_Image(this->icon.c_str());
+                if (msg_json["icon"].type() != nlohmann::json::value_t::null)
+                {
+                    this->icon = msg_json["icon"];
 
-                this->image(fl_icon);
+                    Fl_PNG_Image *fl_icon =
+                        new Fl_PNG_Image(this->icon.c_str());
+
+                    this->image(fl_icon);
+                }
             }
         }
     }
+
+    return (0);
 }

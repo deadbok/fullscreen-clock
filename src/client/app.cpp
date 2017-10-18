@@ -99,12 +99,16 @@ void App::update_msgs(unsigned char lineno)
     if (lineno == 0)
     {
         this->top_msg_line->update(lineno);
-        Fl::repeat_timeout(60.0, this->static_top_msgs_callback, this);
+        Fl::repeat_timeout(300.0, this->static_top_msgs_callback, this);
     }
     else if (lineno == 1)
     {
-        this->bottom_msg_line->update(lineno);
-        Fl::repeat_timeout(60.0, this->static_bottom_msgs_callback, this);
+        int seconds = this->bottom_msg_line->update(lineno);
+        if (seconds == 0)
+        {
+            seconds = 60;
+        }
+        Fl::repeat_timeout(seconds, this->static_bottom_msgs_callback, this);
     }
 }
 
