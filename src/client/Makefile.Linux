@@ -45,10 +45,8 @@ format: $(SRC) $(INC)
 	$(INDENT) $(SRC) $(INC)
 
 clean:
-	$(RM) $(ALL)
-	$(RM) *.o
+	$(RM) $(PROGRAM) $(OBJ)
 	$(RM) core
 
 distclean: clean
-	$(RM) $(PROGRAM)
 	$(RM) json.hpp

@@ -24,24 +24,29 @@ INDENT:=clang-format40 -i
 # Final executable name.
 PROGRAM=../clock
 
-INC=app.h config.h
-SRC=app.cpp config.cpp main.cpp
-OBJ=app.o config.o main.o
+INC=app.h config.h json.hpp msgline.h timeline.h
+SRC=app.cpp config.cpp main.cpp msgline.cpp timeline.cpp
+OBJ=app.o config.o main.o msgline.o timeline.o
 
 all: ${PROGRAM} BSDmakefile
 	@echo "Compiling client for FreeBSD done."
 
-${PROGRAM}: ${OBJ}
+json.hpp:
+	wget https://raw.githubusercontent.com/nlohmann/json/master/src/json.hpp
+
+${PROGRAM}: ${OBJ} ${SRC} ${INC}
 	${CXX} ${OBJ} ${LDFLAGS} -o ${PROGRAM}
 
 .SUFFIXES: .o .cpp
-.cpp.o:
+.cpp.o: ${INC}
 	${CXX} ${CXXFLAGS} -c ${.IMPSRC} -o  ${.TARGET}
 
-format:
+format: ${INC}
 	${INDENT} ${SRC} ${INC}
 
 clean:
-	${RM} ${ALL}
-	${RM} *.o
+	${RM} ${PROGRAM} ${OBJ}
 	${RM} core
+
+distclean: clean
+	$(RM) json.hpp
