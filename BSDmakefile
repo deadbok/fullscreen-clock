@@ -1,6 +1,7 @@
 RM:=rm -f
+CP:=cp
 
-all: client server
+all: client
 
 test: client-test
 
@@ -8,6 +9,7 @@ clean: client-clean server-clean
 
 client:
 	$(MAKE) -C src/client -f BSDmakefile all
+	$(CP) src/client/clock ./clock
 
 client-test:
 	$(MAKE) -C src/client/test -f BSDmakefile all
@@ -28,4 +30,4 @@ server-clean:
 	$(MAKE) -C src/server -f BSDmakefile clean
 
 distclean: client-distclean server-clean
-	$(RM) clock
+	$(RM) ./clock

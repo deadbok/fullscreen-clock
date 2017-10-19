@@ -1,25 +1,12 @@
-# fullscreen-clock
+# Full screen clock
 
-Fullscreen clock using the FLTK toolkit.
+Full screen clock using the FLTK toolkit.
 
  * Clock (use NTP on the system).
  * Open Weather Map integration.
 
-# Dependencies
-
-## Client
-
- * X11
- * FLTK
- * json-c
- * nlohmann-json (JSON for Modern C++: https://github.com/nlohmann/json)
- * libcurl
-
-## Server
-
- * Flask
- * Flask-restplus
- * Request
+*Apart from the primary use this is as much an exercise in getting to know more
+of FreeBSD.*
 
 # Design
 
@@ -45,10 +32,38 @@ server using a RESTful interface.
 ## Server
 
 The server is a Python application using the flask framework. The server is
-extendable through plugins, and can recieve message and icon URLs using a
+extendable through plug-ins, and can receive message and icon URLs using a
 RESTful interface.
 
-# Lightweight FreeBSD installation
+# Dependencies
+
+## Client
+
+ * X11
+ * FLTK
+ * json-c
+ * nlohmann-json (JSON for Modern C++: https://github.com/nlohmann/json)
+ * libcurl
+ * wget (Makefile dependency)
+
+## Server
+
+ * Flask
+ * Flask-restplus
+ * Request
+
+# Makefile targets
+
+ * **all**: Compile client and copy the executable `clock` to the project root
+   directory.
+ * **test**: Compile and run the client tests
+ * **clean**: Delete client object files and executable also delete all
+   pre-compiled python files from the server.
+ * **distclean**: Clean most files that are not part of the sources.
+
+# Installation
+
+## Lightweight FreeBSD installation
 
 Install git for cloning this repository:
 
@@ -58,11 +73,13 @@ Optionally install nano if you do not know how to quit vi:
 
     $ pkg install nano
 
+### Client
+
 Install build and runtime dependencies
 
     $ pkg install xorg-minimal fltk json-c pkgconf urwfonts xset
 
-## Building the clock
+#### Building the clock
 
 Get the source from github:
 
@@ -94,19 +111,19 @@ copying the included example and editing it afterwards.
     $ cp clockrc.example ~/.clockrc
     $ nano ~/.clockrc
 
-## EeePC 701 specifics
+##### EeePC 701 specifics
 
 Install the xorg driver fot the Intel 915GM graphics:
 
     pkg install xf86-video-intel
 
-## Kiosk mode
+#### Kiosk mode
 
 To have the system boot into X and start the clock automatically, X is told to
 start the clock on start. The default shell is told to start X on login. Lastly
 auto login is enabled for the desired user.
 
-### X
+##### X
 
 Edit the `sh` startup script:
 
@@ -141,7 +158,7 @@ and add the following lines:
     saver="NO"
     blanktime="NO"
 
-### Auto login
+##### Auto login
 
 Edit `/etc/gettytab`:
 
@@ -167,7 +184,7 @@ With the line:
 
     ttyv0   "/usr/libexec/getty Al"         xterm   on  secure
 
-### Boot splash
+##### Boot splash
 
 *This has not worked, and is left as a puzzle to the reader.*
 
@@ -185,3 +202,15 @@ bitmap_name="/boot/splash.bmp"
 boot_mute="YES"
 
 "-mnq" to /boot.config.
+
+### Install server
+
+As root:
+
+    pkg install py27-Flask py27-flask-restplus py27-pip
+
+as the user runnng the server:
+
+    pip install --user requests
+    pip install --user pillow
+    pip install --user flask-restplus
