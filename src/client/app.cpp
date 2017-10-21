@@ -31,13 +31,14 @@ App::App(std::string config_file_name)
     std::string fullscreen = this->config->get_value("fullscreen");
     this->fullscreen = false;
 
-    // Creat the FLTK window.
+    // Create the FLTK window with a dark backround.
     this->window = new Fl_Double_Window(Fl::w(), Fl::h(), "Clock");
     this->window->color(fl_rgb_color(50));
 
     std::cout << "Resolution: " << this->window->w() << "x" << this->window->h()
               << std::endl;
 
+    // Find optimal font size.
     int font_size = this->get_max_font_size(
         this->window->w() - this->window->w() / 16,
         this->window->h() - this->window->h() / 16, "00:00");
@@ -54,14 +55,14 @@ App::App(std::string config_file_name)
         }
     }
 
-    // Create a box for the time display.
+    // Create time display.
     this->time_line =
         new TimeLine(this->window->w(), this->window->h(), font_size);
-
+    // Create the top message display.
     this->top_msg_line =
         new MsgLine(0, this->window->h() / 2, this->window->w(),
                     this->window->h(), font_size, this->server_url);
-
+    // Create the bottom message display.
     this->bottom_msg_line =
         new MsgLine(0, (this->window->h() / 4) * 3, this->window->w(),
                     this->window->h(), font_size, this->server_url);
@@ -69,7 +70,7 @@ App::App(std::string config_file_name)
 
 int App::get_max_font_size(int w, int h, std::string text)
 {
-    // Calculate the maximum font size for the current resolution.
+    // Coarse calculation.
     int width = 0, height = 0, font_size = 1;
     while ((width < w) && (height < h))
     {
@@ -77,6 +78,7 @@ int App::get_max_font_size(int w, int h, std::string text)
         fl_measure(text.c_str(), width, height);
         font_size += 50;
     }
+    // Fine calculation.
     while ((width > w) && (height > h))
     {
         fl_font(FL_HELVETICA, font_size);
@@ -96,11 +98,13 @@ void App::update_time()
 
 void App::update_msgs(unsigned char lineno)
 {
+    // Top line always updates every 5 minutes,
     if (lineno == 0)
     {
         this->top_msg_line->update(lineno);
         Fl::repeat_timeout(300.0, this->static_top_msgs_callback, this);
     }
+    // Bottom line updates are controlled by the server,
     else if (lineno == 1)
     {
         int seconds = this->bottom_msg_line->update(lineno);
@@ -116,17 +120,20 @@ int App::run()
 {
     int ret;
 
+    // Add timers to update the GUI elements.
     Fl::add_timeout(0.1, this->static_time_callback, this);
-
     Fl::add_timeout(1.1, this->static_top_msgs_callback, this);
-
     Fl::add_timeout(2.1, this->static_bottom_msgs_callback, this);
 
+    // Run FLTK main loop.
     this->window->show();
-
     ret = Fl::run();
 
     return (ret);
 }
 
-App::~App() { curl_global_cleanup(); }
+App::~App()
+{
+    // Clean up curl.
+    curl_global_cleanup();
+}

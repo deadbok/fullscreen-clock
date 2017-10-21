@@ -10,6 +10,7 @@ The server has the following tasks.
  * Control repeat interval.
  * Add messages by running plug-ins.
  * Add messages using the REST interface.
+ * Scaling and conversion of online graphics to the desired resolution.
  * Configure the clock using a web interface. (TBD)
 
 # Interfaces

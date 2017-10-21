@@ -70,29 +70,52 @@ class App
         App *instance = reinterpret_cast< App * >(cb_data);
         instance->update_time();
     }
+    //! \brief Update the time display.
     void update_time();
 
-    void json_parse(const char *json_str, unsigned char lineno);
-    static size_t msg_cb(char *in, uint size, uint nmemb, void *instance);
-    void get_msg(unsigned char lineno);
+    /** \brief Callback for updating the top message line.
+
+        Call member function update_msgs() with the calling convention used
+        by FLTK.
+
+        \param cb_data Callback data.
+    */
     static void static_top_msgs_callback(void *cb_data)
     {
         App *instance = reinterpret_cast< App * >(cb_data);
         instance->update_msgs(0);
     }
+    /** \brief Callback for updating the bottom message line.
+
+        Call member function update_msgs() with the calling convention used
+        by FLTK.
+
+        \param cb_data Callback data.
+    */
     static void static_bottom_msgs_callback(void *cb_data)
     {
         App *instance = reinterpret_cast< App * >(cb_data);
         instance->update_msgs(1);
     }
+    /** \brief Callback for updating the a message line.
+
+        \param lineno Line to update.
+    */
     void update_msgs(unsigned char lineno);
 
   public:
-    std::string name = "Clock";
-    std::string version = "0.0.3";
+    //! \brief Application name.
+    std::string name = "Clock client";
+    //! \brief Application vrsion.
+    std::string version = "0.0.5";
 
+    /** \brief Constructor.
+        \param config_file_name Path to the client configuration file
+    */
     App(std::string config_file_name);
+    //! \brief Run the application.
     int run();
+    //! \brief Destructor.
     virtual ~App();
 };
 
