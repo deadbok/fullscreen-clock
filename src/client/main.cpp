@@ -12,6 +12,11 @@ int main(int argc, char **argv)
     int ret = 0;
 
     config_filename = "";
+    /* Get the path of the config file.
+     *
+     * 1. From the command line.
+     * 2. Home directory + ".clockrc"
+     */
     if (argc == 2)
     {
         config_filename = argv[1];
@@ -44,6 +49,7 @@ int main(int argc, char **argv)
         exit(1);
     }
 
+    // Run the clock.
     try
     {
 
@@ -53,6 +59,10 @@ int main(int argc, char **argv)
     catch (const ConfigException &e)
     {
         std::cerr << e.what() << std::endl;
+        std::cerr << "In ";
+        std::cerr << __FILE__;
+        std::cerr << ":";
+        std::cerr << __LINE__;
         exit(1);
     }
 

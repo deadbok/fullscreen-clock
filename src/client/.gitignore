@@ -6,4 +6,5 @@ clock
 *.gch
 cscope*.*
 json.hpp
+doc/api
 

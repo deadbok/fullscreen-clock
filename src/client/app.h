@@ -15,7 +15,7 @@
 #include "msgline.h"
 #include "timeline.h"
 
-// Configuration file error exception.
+//! \brief Configuration file error exception.
 class ConfigException : public std::exception
 {
   public:
@@ -28,25 +28,43 @@ class ConfigException : public std::exception
 // Forward decalration of the application class.
 class App;
 
+//! \brief Main apllication class.
 class App
 {
   private:
-    // Configuration data.
+    //! \brief Configuration data.
     Config *config;
-    // Use fullscreen?
+    //! \brief True if the application is running in full screen mode.
     bool fullscreen;
-    // URL of the server.
+    //! \brief URL of the server.
     std::string server_url;
 
+    //! \brief The UI object for the time display.
     TimeLine *time_line;
+    //! \brief The UI object for the top message line.
     MsgLine *top_msg_line;
+    //! \brief The UI object for the Bottom mesage line.
     MsgLine *bottom_msg_line;
 
+    //! \brief Apllication root window.
     Fl_Double_Window *window;
 
+    /** \brief Calculate the maximum font size that will fit a given resolution.
+
+        \param w Width of the drawing area.
+        \param h Height of teh drawing area.
+        \param text Text to fit.
+        \return Font size.
+    */
     int get_max_font_size(int w, int h, std::string text);
 
-    // Callback for updating time.
+    /** \brief Callback for updating time.
+
+        Call member function update_time() with the calling convention used
+        by FLTK.
+
+        \param cb_data Callback data.
+    */
     static void static_time_callback(void *cb_data)
     {
         App *instance = reinterpret_cast< App * >(cb_data);
