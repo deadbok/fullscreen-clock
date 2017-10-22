@@ -98,20 +98,25 @@ void App::update_time()
 
 void App::update_msgs(unsigned char lineno)
 {
-    // Top line always updates every 5 minutes,
+    int seconds = 0;
     if (lineno == 0)
     {
-        this->top_msg_line->update(lineno);
-        Fl::repeat_timeout(300.0, this->static_top_msgs_callback, this);
+        seconds = this->top_msg_line->update(lineno);
     }
-    // Bottom line updates are controlled by the server,
     else if (lineno == 1)
     {
-        int seconds = this->bottom_msg_line->update(lineno);
-        if (seconds == 0)
-        {
-            seconds = 60;
-        }
+        seconds = this->bottom_msg_line->update(lineno);
+    }
+    if (seconds == 0)
+    {
+        seconds = 60;
+    }
+    if (lineno == 0)
+    {
+        Fl::repeat_timeout(seconds, this->static_top_msgs_callback, this);
+    }
+    else if (lineno == 1)
+    {
         Fl::repeat_timeout(seconds, this->static_bottom_msgs_callback, this);
     }
 }
