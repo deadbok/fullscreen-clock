@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
     <meta charset="UTF-8">
-    <title>Fullscreen clock - server administration</title>
-</head>
-<body>
+    <title>Full screen clock</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/frontend.css') }}">
 
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/frontend.js') }}"></script>
+
+
+
+</head>
+<body  onload="startTime()">
+<div id="time_display">00:00</div>
+<div id="msg1_display">Hello</div>
+<div id="msg2_display">World!</div>
 </body>
 </html>
