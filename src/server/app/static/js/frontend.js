@@ -6,7 +6,7 @@ function get_time() {
         m = "0" + m;  // add zero in front of numbers < 10
     }
 
-    $('#time_display').text(h + ":" + m);
+    $('#time_text').text(h + ":" + m);
     var t = setTimeout(get_time, 1000);
 }
 
@@ -14,10 +14,16 @@ function get_msg(lineno) {
     $.ajax({
         url: "http://127.0.0.1:5000/api/line/" + lineno,
         success: function (data) {
-            var id = 'msg' + lineno + '_display';
+            var id = 'msg' + lineno + '_text';
             $('#' + id).text(data.text);
             id = 'msg' + lineno + '_icon';
-            $('#' + id).attr("src", data.icon_url);
+            if (data.icon_url === "") {
+                $('#' + id).hide();
+            }
+            else {
+                $('#' + id).show();
+                $('#' + id).attr("src", data.icon_url);
+            }
             var seconds = data.seconds * 1000;
             if (seconds === 0) {
                 seconds = 60000;

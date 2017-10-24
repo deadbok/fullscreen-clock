@@ -31,6 +31,9 @@ class Message(PluginBase):
 
     def update(self):
         self.ret['text'] = self.message
-        self.ret['icon'] = self.icon_dir + self.icon
-        self.ret['icon_url'] = self.icon_url + self.icon
+        if self.icon is not '':
+            self.ret['icon'] = self.icon_dir + self.icon
+            self.ret['icon_url'] = self.icon_url + self.icon
+        else:
+            self.ret['icon'] = self.ret['icon_url'] = ''
         self.ret['seconds'] = self.display_sec

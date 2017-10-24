@@ -2,8 +2,8 @@ import os
 import time
 import urllib2
 import cStringIO
+import copy
 from PIL import Image
-from flask import current_app
 
 
 class UnImplementedUpdateException(Exception):
@@ -14,7 +14,6 @@ class UnImplementedUpdateException(Exception):
 
 class PluginBase(object):
     def __init__(self, config, static_path):
-
         self.display_sec = 60
         self.interval_sec = 60
         self.repeat = 0
@@ -23,13 +22,11 @@ class PluginBase(object):
         self.icon_dir = static_path + '/images/'
         self.icon_url = ''
         self.icon_size = (64, 64)
-        self.ret = {'text': '', 'icon': '', 'seconds': self.display_sec}
+        self.ret = {'text': '', 'icon': '', 'icon_url': '', 'seconds': self.display_sec}
 
     def fetch_icon(self, url):
         ret = '';
         if url is not '':
-            image_stream = urllib2.urlopen(url)
-
             buffer = cStringIO.StringIO(urllib2.urlopen(url).read())
 
             image = Image.open(buffer)
@@ -52,4 +49,4 @@ class PluginBase(object):
             self.update()
             if self.repeat > 0:
                 self.repeat -= 1
-        return (self.ret)
+        return (copy.deepcopy(self.ret))

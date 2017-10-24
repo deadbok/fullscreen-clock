@@ -2,23 +2,29 @@ body  {
     background-color: #323232;
     color: #ffffff;
 }
+
 #time_display {
-    height: 50vh;
-    font-size: 50vh;
+    height: 48vh;
+    font-size: 48vh;
     text-align: center;
     font-family: sans;
 }
 
 #msg0_display {
-    height: 25vh;
-    font-size: 24vh;
+    height: 22vh;
+    font-size: 20vh;
     text-align: center;
     font-family: sans;
 }
 
 #msg1_display {
-    height: 25vh;
-    font-size: 24vh;
+    height: 22vh;
+    font-size: 20vh;
     text-align: center;
     font-family: sans;
+}
+
+.icon {
+    height: 1em;
+    width: 1em;
 }

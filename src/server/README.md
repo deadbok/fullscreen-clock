@@ -4,7 +4,8 @@ This is the server part of the full screen clock. It is a flask application
 controlled by a web configuration interface (TBD) and a REST interface.
 
 The server has the following tasks.
-
+ 
+ * Provide a HTML version of the clock client.
  * Queue messages for the client.
  * Repeat messages.
  * Control repeat interval.

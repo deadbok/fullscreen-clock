@@ -6,15 +6,10 @@
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/frontend.js') }}"></script>
-
-
-
 </head>
 <body  onload="">
-<div id="time_display">00:00</div>
-<img src="" id="msg0_icon" />
-<div id="msg0_display">Hello</div>
-<img src="" id="msg1_icon" />
-<div id="msg1_display">World!</div>
+<div id="time_display"><span id="time_text">00:00</span></div>
+<div id="msg0_display"><img src="" class="icon" id="msg0_icon" /><span id="msg0_text">Hello</span></div>
+<div id="msg1_display"><img src="" class="icon" id="msg1_icon" /><span id="msg1_text">World!</span></div>
 </body>
 </html>
