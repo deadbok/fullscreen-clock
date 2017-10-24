@@ -13,14 +13,15 @@ class UnImplementedUpdateException(Exception):
 
 
 class PluginBase(object):
-    def __init__(self):
+    def __init__(self, config, static_path):
 
         self.display_sec = 60
         self.interval_sec = 60
         self.repeat = 0
         self.last_run_time = 0
         self.line = 0
-        self.icon_dir = 'images/'
+        self.icon_dir = static_path + '/images/'
+        self.icon_url = ''
         self.icon_size = (64, 64)
         self.ret = {'text': '', 'icon': '', 'seconds': self.display_sec}
 
@@ -34,11 +35,11 @@ class PluginBase(object):
             image = Image.open(buffer)
             icon = image.resize(self.icon_size, Image.LANCZOS)
 
-            ret = self.icon_dir
+            #ret = self.icon_dir
             ret += os.path.splitext(os.path.basename(url))[0]
             ret += '.png'
 
-            icon.save(ret, 'PNG')
+            icon.save(self.icon_dir + ret, 'PNG')
 
         return (ret)
 

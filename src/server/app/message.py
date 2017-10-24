@@ -1,15 +1,15 @@
 import os
 
 from app.pluginbase import PluginBase
-from flask import current_app
+from flask import current_app, url_for
 
 
 class Message(PluginBase):
     def __init__(self, message, icon, interval_sec = 60, display_sec = 60, repeat = 0):
-        super(Message, self).__init__()
+        super(Message, self).__init__(None, current_app.static_folder)
 
-        self.icon_dir = current_app.static_folder + "/" + current_app.config[
-            'MSG_ICON_DIR']
+        self.icon_dir += current_app.config['MSG_ICON_DIR']
+        self.icon_url = 'images/' + current_app.config['MSG_ICON_DIR']
         self.icon_size = current_app.config['ICON_SIZE']
 
         self.message = message
@@ -31,5 +31,6 @@ class Message(PluginBase):
 
     def update(self):
         self.ret['text'] = self.message
-        self.ret['icon'] = self.icon
+        self.ret['icon'] = self.icon_dir + self.icon
+        self.ret['icon_url'] = self.icon_url + self.icon
         self.ret['seconds'] = self.display_sec

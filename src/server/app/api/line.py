@@ -1,6 +1,6 @@
 from Queue import Empty
 
-from flask import current_app
+from flask import current_app, url_for
 from flask_restplus import Resource, fields
 
 from app.api import api
@@ -23,8 +23,7 @@ class LineEP(Resource):
         Get the messages queued for a line.
         """
         lineno = int(lineno)
-        plugin = None
-        ret = {'text': '', 'icon': '', 'seconds': 0}
+        ret = {'text': '', 'icon': '', 'icon_url': '', 'seconds': 0}
         plugin_queue = None
 
         if lineno == 0:
@@ -36,6 +35,8 @@ class LineEP(Resource):
             try:
                 plugin = plugin_queue.get(False)
                 ret = plugin.run()
+                if ret['icon_url'] is not '':
+                    ret['icon_url'] = url_for('static', filename=ret['icon_url'])
                 plugin_queue.task_done()
                 if plugin.repeat != 0:
                     plugin_queue.put(plugin)

@@ -9,14 +9,14 @@ body  {
     font-family: sans;
 }
 
-#msg1_display {
+#msg0_display {
     height: 25vh;
     font-size: 24vh;
     text-align: center;
     font-family: sans;
 }
 
-#msg2_display {
+#msg1_display {
     height: 25vh;
     font-size: 24vh;
     text-align: center;

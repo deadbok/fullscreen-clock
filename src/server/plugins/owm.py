@@ -16,11 +16,12 @@ class OWM(PluginBase):
                 "11d", "11n", "13d", "13n", "50d", "50n"]
 
     def __init__(self, config, static_path):
-        super(OWM, self).__init__()
+        super(OWM, self).__init__(config, static_path)
 
         self.api_key = config['OWM_API_KEY']
         self.city_id = config['OWM_CITY_ID']
-        self.icon_dir = static_path + "/" + config['OWM_ICON_DIR']
+        self.icon_dir += config['OWM_ICON_DIR']
+        self.icon_url = 'images/' + config['OWM_ICON_DIR']
         self.celsius = config['OWM_CELSIUS']
         self.icon_size = config['ICON_SIZE']
         self.interval_sec = 600
@@ -59,6 +60,8 @@ class OWM(PluginBase):
 
         if len(weather_data['weather']) > 0:
             self.ret['icon'] = self.icon_dir + \
+                               weather_data['weather'][0]['icon'] + '.png'
+            self.ret['icon_url'] = self.icon_url + '/' + \
                                weather_data['weather'][0]['icon'] + '.png'
 
         self.ret['seconds'] = self.display_sec

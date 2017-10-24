@@ -24,10 +24,12 @@ The server has the following tasks.
             {
                 'text': <string>,
                 'icon': <string>
+                'seconds': <int>
             }
 
         * **text**: Text to display
         * **icon**: URL to an icon to display
+        * **seconds**: Second to display the message.
  * `/api/message`: (PUT)
     * Add a message to the queue of waiting messages for the client.
     * JSON:

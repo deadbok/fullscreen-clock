@@ -1,30 +1,48 @@
-function startTime() {
+function get_time() {
     var today = new Date();
     var h = today.getHours();
     var m = today.getMinutes();
-    m = checkTime(m);
-    document.getElementById('time_display').innerHTML =
-        h + ":" + m;
-    var t = setTimeout(startTime, 1000);
-}
-
-function checkTime(i) {
-    if (i < 10) {
-        i = "0" + i;  // add zero in front of numbers < 10
+    if (m < 10) {
+        m = "0" + m;  // add zero in front of numbers < 10
     }
-    return i;
+
+    $('#time_display').text(h + ":" + m);
+    var t = setTimeout(get_time, 1000);
 }
 
 function get_msg(lineno) {
     $.ajax({
-        url: "http://127.0.0.1:5000/api/line/" + lineno //Get from Flask
-    }).then(function (data) {
-        $('#msg' + lineno + "_dispay").append(data.text);
-        var seconds = $data.seconds;
+        url: "http://127.0.0.1:5000/api/line/" + lineno,
+        success: function (data) {
+            var id = 'msg' + lineno + '_display';
+            $('#' + id).text(data.text);
+            id = 'msg' + lineno + '_icon';
+            $('#' + id).attr("src", data.icon_url);
+            var seconds = data.seconds * 1000;
+            if (seconds === 0) {
+                seconds = 60000;
+            }
+            if (lineno === 0) {
+                var t = setTimeout(get_top_msg, seconds);
+            }
+            else if (lineno === 1) {
+                var t = setTimeout(get_bottom_msg, seconds);
+            }
+        }
     });
 }
 
-$(document).ready(function () {
+function get_top_msg() {
     get_msg(0);
+}
+
+function get_bottom_msg() {
     get_msg(1);
+}
+
+
+$(document).ready(function () {
+    get_top_msg();
+    get_bottom_msg();
+    get_time()
 });

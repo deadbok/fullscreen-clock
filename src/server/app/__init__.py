@@ -1,6 +1,6 @@
 
 
-from flask import Blueprint, Flask
+from flask import Blueprint, Flask, url_for
 
 from pluginloader import PluginLoader
 
